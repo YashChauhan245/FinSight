@@ -4,20 +4,21 @@ import { PenBox, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
+import { checkUser } from "@/lib/checkUser";
 
-const Header =  () => {
-
+const Header =async () => {
+  await checkUser()
   return (
     <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
-      <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
+      <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <Image
             src="/logoo.png"
             alt="FinSight Logo"
-            width={220}
-            height={70}
+            width={100}
+            height={80}
             priority
-            className="h-14 w-auto object-contain"
+            className="h-12 md:h-14 w-auto object-contain drop-shadow-[0_0_14px_rgba(59,130,246,0.45)]"
           />
         </Link>
 
