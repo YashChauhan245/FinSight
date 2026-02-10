@@ -36,6 +36,13 @@ export default async function AccountPage({ params }) {
           </p>
         </div>
       </div>
+
+      {/* Transactions Table */}
+      <Suspense
+        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
+      >
+        <TransactionTable transactions={transactions} />
+      </Suspense>
     </div>
-    );
+  );
 }
