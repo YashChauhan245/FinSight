@@ -92,7 +92,7 @@ export const testimonialsData = [
     role: "Small Business Owner",
     image: "https://randomuser.me/api/portraits/women/75.jpg",
     quote:
-      "Welth has transformed how I manage my business finances. The AI insights helped me spot cost-saving opportunities I had completely missed.",
+      "FinSight has transformed how I manage my business finances. The AI insights helped me spot cost-saving opportunities I had completely missed.",
   },
   {
     name: "Michael Chen",
@@ -106,7 +106,7 @@ export const testimonialsData = [
     role: "Financial Advisor",
     image: "https://randomuser.me/api/portraits/women/74.jpg",
     quote:
-      "I recommend Welth to my clients for its clean analytics and smart transaction tracking. It makes financial planning incredibly simple.",
+      "I recommend FinSight to my clients for its clean analytics and smart transaction tracking. It makes financial planning incredibly simple.",
   },
 
   // 🔥 New testimonials
@@ -115,14 +115,14 @@ export const testimonialsData = [
     role: "Startup Founder",
     image: "https://randomuser.me/api/portraits/men/32.jpg",
     quote:
-      "Welth gives me a complete view of all transactions in one place. The automatic summaries help me make faster business decisions.",
+      "FinSight gives me a complete view of all transactions in one place. The automatic summaries help me make faster business decisions.",
   },
   {
     name: "Jessica Lee",
     role: "E-commerce Seller",
     image: "https://randomuser.me/api/portraits/women/68.jpg",
     quote:
-      "Scanning receipts and exporting reports for accounting has never been this easy. Welth saved me from spreadsheet chaos.",
+      "Scanning receipts and exporting reports for accounting has never been this easy. FinSight saved me from spreadsheet chaos.",
   },
   {
     name: "Rahul Mehta",
@@ -136,13 +136,13 @@ export const testimonialsData = [
     role: "Consultant",
     image: "https://randomuser.me/api/portraits/women/52.jpg",
     quote:
-      "I love how Welth automatically categorizes transactions and lets me export everything for tax season in seconds.",
+      "I love how FinSight automatically categorizes transactions and lets me export everything for tax season in seconds.",
   },
   {
     name: "Daniel Kim",
     role: "Finance Lead",
     image: "https://randomuser.me/api/portraits/men/61.jpg",
     quote:
-      "From transaction tracking to smart insights, Welth feels like having a personal finance assistant working 24/7.",
+      "From transaction tracking to smart insights, FinSight feels like having a personal finance assistant working 24/7.",
   },
 ];
