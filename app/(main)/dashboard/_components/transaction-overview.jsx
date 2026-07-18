@@ -37,6 +37,8 @@ export function DashboardOverview({ accounts, transactions }) {
     accounts.find((a) => a.isDefault)?.id || accounts[0]?.id
   );
 
+  const [timeRange, setTimeRange] = useState("this-month");
+
   // Filter transactions for selected account
   const accountTransactions = transactions.filter(
     (t) => t.accountId === selectedAccountId
@@ -47,19 +49,45 @@ export function DashboardOverview({ accounts, transactions }) {
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, 5);
 
-  // Calculate expense breakdown for current month
-  const currentDate = new Date();
-  const currentMonthExpenses = accountTransactions.filter((t) => {
+  // Calculate expense breakdown based on selected time range
+  const filteredExpenses = accountTransactions.filter((t) => {
+    if (t.type !== "EXPENSE") return false;
+
     const transactionDate = new Date(t.date);
-    return (
-      t.type === "EXPENSE" &&
-      transactionDate.getMonth() === currentDate.getMonth() &&
-      transactionDate.getFullYear() === currentDate.getFullYear()
-    );
+    const currentDate = new Date();
+
+    switch (timeRange) {
+      case "this-month":
+        return (
+          transactionDate.getMonth() === currentDate.getMonth() &&
+          transactionDate.getFullYear() === currentDate.getFullYear()
+        );
+      case "last-month": {
+        const lastMonthMonth = currentDate.getMonth() === 0 ? 11 : currentDate.getMonth() - 1;
+        const lastMonthYear = currentDate.getMonth() === 0 ? currentDate.getFullYear() - 1 : currentDate.getFullYear();
+        return (
+          transactionDate.getMonth() === lastMonthMonth &&
+          transactionDate.getFullYear() === lastMonthYear
+        );
+      }
+      case "3-months": {
+        const threeMonthsAgo = new Date();
+        threeMonthsAgo.setMonth(currentDate.getMonth() - 3);
+        return transactionDate >= threeMonthsAgo;
+      }
+      case "6-months": {
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(currentDate.getMonth() - 6);
+        return transactionDate >= sixMonthsAgo;
+      }
+      case "all-time":
+      default:
+        return true;
+    }
   });
 
   // Group expenses by category
-  const expensesByCategory = currentMonthExpenses.reduce((acc, transaction) => {
+  const expensesByCategory = filteredExpenses.reduce((acc, transaction) => {
     const category = transaction.category;
     if (!acc[category]) {
       acc[category] = 0;
@@ -145,16 +173,28 @@ export function DashboardOverview({ accounts, transactions }) {
       </Card>
 
       {/* Expense Breakdown Card */}
-      <Card>
-        <CardHeader>
+      <Card className="flex flex-col">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <CardTitle className="text-base font-normal">
-            Monthly Expense Breakdown
+            Expense Breakdown
           </CardTitle>
+          <Select value={timeRange} onValueChange={setTimeRange}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Select range" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="this-month">This Month</SelectItem>
+              <SelectItem value="last-month">Last Month</SelectItem>
+              <SelectItem value="3-months">Last 3 Months</SelectItem>
+              <SelectItem value="6-months">Last 6 Months</SelectItem>
+              <SelectItem value="all-time">All Time</SelectItem>
+            </SelectContent>
+          </Select>
         </CardHeader>
-        <CardContent className="p-0 pb-5">
+        <CardContent className="p-0 pb-5 flex-1 flex flex-col justify-center">
           {pieChartData.length === 0 ? (
-            <p className="text-center text-muted-foreground py-4">
-              No expenses this month
+            <p className="text-center text-muted-foreground py-12">
+              No expenses in this period
             </p>
           ) : (
             <div className="h-[300px]">
