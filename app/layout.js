@@ -23,6 +23,10 @@ const inter = Inter({
 export const metadata = {
   title: "FinSight - AI-Powered Financial Management",
   description: "Track, plan, and grow your finances with AI-powered insights.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
