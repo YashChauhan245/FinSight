@@ -17,32 +17,24 @@ import {
 // ─── Features ───────────────────────────────────────────────
 const features = [
   {
-    icon: <Wallet className="h-6 w-6 text-violet-700" />,
+    icon: <Wallet className="h-5 w-5 text-violet-600" />,
     title: "Expense Tracking",
     description: "Add transactions manually or scan receipts. See where every rupee goes.",
-    color: "bg-violet-50",
-    border: "border-violet-100",
   },
   {
-    icon: <PiggyBank className="h-6 w-6 text-cyan-700" />,
+    icon: <PiggyBank className="h-5 w-5 text-blue-600" />,
     title: "Budget Planning",
     description: "Set monthly limits per category and get real-time burn-rate feedback.",
-    color: "bg-cyan-50",
-    border: "border-cyan-100",
   },
   {
-    icon: <Sparkles className="h-6 w-6 text-amber-600" />,
+    icon: <Sparkles className="h-5 w-5 text-amber-600" />,
     title: "AI Insights",
     description: "Gemini-powered answers based on your actual spending — not generic advice.",
-    color: "bg-amber-50",
-    border: "border-amber-100",
   },
   {
-    icon: <Target className="h-6 w-6 text-emerald-700" />,
+    icon: <Target className="h-5 w-5 text-emerald-600" />,
     title: "Goal Tracking",
     description: "Track savings milestones with progress bars and automated nudges.",
-    color: "bg-emerald-50",
-    border: "border-emerald-100",
   },
 ];
 
@@ -60,7 +52,7 @@ const pricingTiers = [
     price: "₹0",
     period: "forever",
     badge: "Current Tier",
-    badgeColor: "bg-emerald-100 text-emerald-700",
+    badgeColor: "bg-emerald-50 text-emerald-700 border border-emerald-100",
     description: "Everything you need to get started — no credit card, no trial.",
     features: [
       "Unlimited transactions",
@@ -73,7 +65,7 @@ const pricingTiers = [
     cta: "Get Started Free",
     ctaHref: "/dashboard",
     ctaStyle:
-      "bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-700 hover:to-cyan-600 text-white shadow-lg shadow-violet-200",
+      "bg-violet-600 hover:bg-violet-700 text-white shadow-sm font-medium",
     highlight: true,
   },
   {
@@ -81,7 +73,7 @@ const pricingTiers = [
     price: "Coming Soon",
     period: "",
     badge: "In Development",
-    badgeColor: "bg-slate-100 text-slate-500",
+    badgeColor: "bg-gray-100 text-gray-600 border border-gray-200",
     description: "Advanced automation, unlimited sync, and custom workflows.",
     features: [
       "Everything in Free",
@@ -93,7 +85,7 @@ const pricingTiers = [
     ],
     cta: "Join Waitlist",
     ctaHref: "#",
-    ctaStyle: "border border-slate-300 text-slate-700 hover:bg-slate-50",
+    ctaStyle: "border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 font-medium shadow-sm",
     highlight: false,
   },
 ];
@@ -135,36 +127,33 @@ const liveFeed = [
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen text-slate-900 pb-12">
+    <div className="min-h-screen bg-white text-gray-900 pb-12 font-inter">
       {/* ── Hero ── */}
       <HeroSection />
 
       {/* ── Features ── */}
-      <section id="features" className="py-24 px-4 max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-          <span className="text-xs font-bold uppercase tracking-widest text-violet-600">
-            Features
-          </span>
-          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-slate-900 font-manrope">
+      <section id="features" className="py-16 md:py-20 px-4 max-w-7xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-900 font-inter">
             Features That Actually Help
           </h2>
-          <p className="text-slate-500 text-sm md:text-base">
+          <p className="text-gray-500 text-sm md:text-base">
             Built by students who needed real tools — not another flashy dashboard.
           </p>
         </div>
 
         {/* Bento Grid Top Row */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-16">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4 mb-12">
           {features.map((f, i) => (
             <div
               key={i}
-              className={`rounded-2xl border ${f.border} ${f.color} p-6 flex flex-col gap-4 hover:-translate-y-1 hover:shadow-lg transition-all duration-300`}
+              className="rounded-xl border border-gray-200 bg-white p-6 flex flex-col gap-3.5 text-left shadow-sm hover:border-gray-300 transition-all duration-200"
             >
-              <div className="w-10 h-10 rounded-xl bg-white/80 flex items-center justify-center shadow-sm border border-white">
+              <div className="w-9 h-9 rounded-lg bg-gray-50 border border-gray-200/80 flex items-center justify-center">
                 {f.icon}
               </div>
-              <h3 className="text-base font-bold text-slate-900 font-manrope">{f.title}</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">{f.description}</p>
+              <h3 className="text-base font-bold text-gray-900 font-inter">{f.title}</h3>
+              <p className="text-xs text-gray-600 leading-relaxed font-medium">{f.description}</p>
             </div>
           ))}
         </div>
@@ -172,9 +161,9 @@ const LandingPage = () => {
         {/* Bento — Live Feed + Budget Cards */}
         <div className="grid gap-6 md:grid-cols-2">
           {/* Live Transaction Feed */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-4 text-left">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
                 Live Transaction Feed
               </span>
               <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
@@ -182,20 +171,20 @@ const LandingPage = () => {
                 Syncing
               </span>
             </div>
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               {liveFeed.map((tx, i) => (
                 <div
                   key={i}
-                  className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0"
+                  className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-xl">{tx.emoji}</span>
+                    <span className="text-lg">{tx.emoji}</span>
                     <div>
-                      <p className="text-xs font-semibold text-slate-800">{tx.label}</p>
-                      <p className="text-[10px] text-slate-400">{tx.cat}</p>
+                      <p className="text-xs font-semibold text-gray-900 font-inter">{tx.label}</p>
+                      <p className="text-[10px] text-gray-400 font-medium">{tx.cat}</p>
                     </div>
                   </div>
-                  <span className={`text-sm font-extrabold ${tx.color}`}>
+                  <span className={`text-xs font-bold tabular-nums ${tx.color}`}>
                     {tx.sign}{tx.amt}
                   </span>
                 </div>
@@ -204,8 +193,8 @@ const LandingPage = () => {
           </div>
 
           {/* Budget Snapshot */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-4 text-left">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
               Budget Snapshot — July
             </span>
 
@@ -213,93 +202,89 @@ const LandingPage = () => {
               { cat: "Dining Out", spent: 3600, total: 5000, color: "bg-amber-500" },
               { cat: "Subscriptions", spent: 1150, total: 2000, color: "bg-violet-500" },
               { cat: "Groceries", spent: 4200, total: 6000, color: "bg-emerald-500" },
-              { cat: "Transport", spent: 900, total: 1500, color: "bg-cyan-500" },
+              { cat: "Transport", spent: 900, total: 1500, color: "bg-blue-500" },
             ].map((b) => {
               const pct = Math.round((b.spent / b.total) * 100);
               return (
                 <div key={b.cat} className="space-y-1.5">
-                  <div className="flex justify-between text-xs font-semibold text-slate-700">
+                  <div className="flex justify-between text-xs font-semibold text-gray-700">
                     <span>{b.cat}</span>
-                    <span className="text-slate-400">
+                    <span className="text-gray-400 tabular-nums">
                       ₹{b.spent.toLocaleString("en-IN")} / ₹{b.total.toLocaleString("en-IN")}
                     </span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                  <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden border border-gray-200/50">
                     <div
-                      className={`${b.color} h-full rounded-full transition-all duration-700`}
+                      className={`${b.color} h-full rounded-full transition-all duration-500`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <p className="text-[10px] text-slate-400">{pct}% used</p>
+                  <p className="text-[10px] text-gray-400 font-medium">{pct}% used</p>
                 </div>
               );
             })}
 
             {/* Savings Milestone */}
-            <div className="mt-2 rounded-xl border border-violet-100 bg-violet-50 p-4 space-y-2">
-              <div className="flex justify-between text-xs font-bold text-slate-800">
+            <div className="mt-2 rounded-xl border border-violet-100 bg-violet-50/60 p-3.5 space-y-2">
+              <div className="flex justify-between text-xs font-bold text-gray-900">
                 <span>🎯 MacBook Pro Goal</span>
-                <span className="text-violet-600">₹68,000 / ₹1,40,000</span>
+                <span className="text-violet-700 tabular-nums">₹68,000 / ₹1,40,000</span>
               </div>
               <div className="w-full bg-white rounded-full h-2 border border-violet-100 overflow-hidden">
-                <div className="bg-gradient-to-r from-violet-500 to-cyan-400 h-full rounded-full" style={{ width: "48%" }} />
+                <div className="bg-violet-600 h-full rounded-full" style={{ width: "48%" }} />
               </div>
-              <p className="text-[10px] text-violet-500 font-semibold">48% — on track ✓</p>
+              <p className="text-[10px] text-violet-600 font-semibold">48% — on track ✓</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── How It Works ── */}
-      <section id="how-it-works" className="py-24 px-4 max-w-7xl mx-auto">
-        <div className="text-left mb-10">
-          <span className="text-xs font-bold uppercase tracking-widest text-violet-600">Process</span>
-          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-slate-900 font-manrope mt-2">
+      <section id="how-it-works" className="py-16 md:py-20 px-4 max-w-7xl mx-auto">
+        <div className="text-left mb-8">
+          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-900 font-inter">
             How It Works
           </h2>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-3 text-left">
           {[
-            { step: "01", color: "bg-violet-100 text-violet-700", title: "Add transactions", body: "Manual entry or snap a receipt photo — FinSight auto-fills the category and amount." },
-            { step: "02", color: "bg-blue-100 text-blue-700", title: "Get AI insights", body: "Ask Gemini natural language questions. Get answers grounded in your real data." },
-            { step: "03", color: "bg-cyan-100 text-cyan-700", title: "Improve spending", body: "Act on budget nudges, recurring alerts, and month-over-month anomaly reports." },
+            { step: "01", color: "bg-violet-50 text-violet-700 border-violet-100", title: "Add transactions", body: "Manual entry or snap a receipt photo — FinSight auto-fills the category and amount." },
+            { step: "02", color: "bg-blue-50 text-blue-700 border-blue-100", title: "Get AI insights", body: "Ask Gemini natural language questions. Get answers grounded in your real data." },
+            { step: "03", color: "bg-emerald-50 text-emerald-700 border-emerald-100", title: "Improve spending", body: "Act on budget nudges, recurring alerts, and month-over-month anomaly reports." },
           ].map((s) => (
             <div
               key={s.step}
-              className="bg-white border border-slate-200 p-7 rounded-2xl space-y-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+              className="bg-white border border-gray-200 p-6 rounded-xl space-y-3.5 shadow-sm hover:border-gray-300 transition-all duration-200"
             >
-              <div className={`inline-flex items-center px-3 py-1 rounded-full ${s.color} text-xs font-extrabold tracking-widest`}>
+              <div className={`inline-flex items-center px-2.5 py-0.5 rounded-md border ${s.color} text-[11px] font-bold tracking-wider`}>
                 STEP {s.step}
               </div>
-              <h3 className="text-lg font-bold text-slate-900 font-manrope">{s.title}</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">{s.body}</p>
+              <h3 className="text-base font-bold text-gray-900 font-inter">{s.title}</h3>
+              <p className="text-xs text-gray-600 leading-relaxed font-medium">{s.body}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── Interactive AI Chat Simulator ── */}
-      <section id="ai-demo" className="py-24 px-4 max-w-7xl mx-auto">
-        <div className="grid gap-10 lg:grid-cols-2 items-center">
-          <div className="space-y-5 text-left">
-            <span className="text-xs font-bold uppercase tracking-widest text-violet-600">
-              AI Demo
-            </span>
-            <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-slate-900 font-manrope">
+      <section id="ai-demo" className="py-16 md:py-20 px-4 max-w-7xl mx-auto">
+        <div className="grid gap-8 lg:grid-cols-2 items-center">
+          <div className="space-y-4 text-left">
+            <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-900 font-inter">
               Ask anything about your finances
             </h2>
-            <p className="text-slate-600 text-sm md:text-base leading-relaxed max-w-md">
+            <p className="text-gray-600 text-sm leading-relaxed max-w-md">
               FinSight&apos;s AI assistant is powered by Gemini and trained on your real transaction history — not generic templates.
             </p>
-            <ul className="space-y-2">
+            <ul className="space-y-2 pt-1">
               {[
                 "Analyses 90 days of real spending data",
                 "Detects month-over-month anomalies",
                 "Gives actionable, rupee-specific advice",
               ].map((pt, i) => (
-                <li key={i} className="flex items-center gap-2.5 text-sm text-slate-700 font-medium">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                <li key={i} className="flex items-center gap-2.5 text-xs font-medium text-gray-700">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                   {pt}
                 </li>
               ))}
@@ -310,47 +295,46 @@ const LandingPage = () => {
       </section>
 
       {/* ── Pricing ── */}
-      <section className="py-24 px-4 max-w-5xl mx-auto">
-        <div className="text-center mb-14 space-y-3">
-          <span className="text-xs font-bold uppercase tracking-widest text-violet-600">Pricing</span>
-          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-slate-900 font-manrope">
+      <section className="py-16 md:py-20 px-4 max-w-5xl mx-auto">
+        <div className="text-center mb-12 space-y-2">
+          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-900 font-inter">
             Simple, honest pricing
           </h2>
-          <p className="text-slate-500 text-sm md:text-base">
+          <p className="text-gray-500 text-sm md:text-base">
             No hidden fees. No trial periods. Start for free today.
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 text-left">
           {pricingTiers.map((tier) => (
             <div
               key={tier.name}
-              className={`rounded-2xl border p-8 space-y-6 flex flex-col ${
+              className={`rounded-xl border p-7 space-y-5 flex flex-col ${
                 tier.highlight
-                  ? "border-violet-200 bg-white shadow-xl shadow-violet-100/60"
-                  : "border-slate-200 bg-slate-50/50"
+                  ? "border-violet-200 bg-white shadow-sm ring-1 ring-violet-200"
+                  : "border-gray-200 bg-gray-50/50 shadow-sm"
               }`}
             >
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-extrabold text-slate-900 font-manrope">{tier.name}</h3>
-                  <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${tier.badgeColor}`}>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-gray-900 font-inter">{tier.name}</h3>
+                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ${tier.badgeColor}`}>
                     {tier.badge}
                   </span>
                 </div>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-4xl font-extrabold text-slate-900">{tier.price}</span>
+                  <span className="text-3xl font-extrabold text-gray-900 tabular-nums">{tier.price}</span>
                   {tier.period && (
-                    <span className="text-slate-400 text-sm font-medium">/ {tier.period}</span>
+                    <span className="text-gray-400 text-xs font-medium">/ {tier.period}</span>
                   )}
                 </div>
-                <p className="text-sm text-slate-600 leading-relaxed">{tier.description}</p>
+                <p className="text-xs text-gray-600 leading-relaxed font-medium">{tier.description}</p>
               </div>
 
-              <ul className="space-y-2.5 flex-1">
+              <ul className="space-y-2 flex-1">
                 {tier.features.map((f, i) => (
-                  <li key={i} className="flex items-center gap-2.5 text-sm text-slate-700">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                  <li key={i} className="flex items-center gap-2.5 text-xs text-gray-700 font-medium">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                     {f}
                   </li>
                 ))}
@@ -358,7 +342,7 @@ const LandingPage = () => {
 
               <Link href={tier.ctaHref}>
                 <Button
-                  className={`w-full font-bold py-5 rounded-xl text-sm transition-all ${tier.ctaStyle}`}
+                  className={`w-full font-medium py-2.5 h-10 rounded-xl text-xs transition-all ${tier.ctaStyle}`}
                   variant={tier.highlight ? "default" : "outline"}
                 >
                   {tier.cta}
@@ -370,49 +354,47 @@ const LandingPage = () => {
       </section>
 
       {/* ── Social Proof ── */}
-      <section className="py-24 px-4 max-w-7xl mx-auto">
-        <div className="grid gap-6 md:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 space-y-3 shadow-sm md:col-span-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-500">Social Proof</span>
-            <h3 className="text-2xl font-extrabold text-slate-900 font-manrope">
+      <section className="py-16 md:py-20 px-4 max-w-7xl mx-auto">
+        <div className="grid gap-6 md:grid-cols-3 text-left">
+          <div className="rounded-xl border border-gray-200 bg-white p-7 space-y-3 shadow-sm md:col-span-2">
+            <h3 className="text-xl font-bold text-gray-900 font-inter">
               Trusted by 1,000+ students & professionals
             </h3>
-            <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+            <p className="text-gray-600 text-xs md:text-sm leading-relaxed font-medium">
               From IIT hostels to first salaries — FinSight helps real people stay on budget without opening 5 different apps.
             </p>
           </div>
-          <div className="rounded-2xl border border-violet-100 bg-violet-50 p-8 flex flex-col justify-center gap-3 shadow-sm">
-            <div className="text-4xl font-extrabold text-violet-700">₹2.4Cr+</div>
-            <p className="text-sm font-semibold text-violet-800">in transactions tracked</p>
-            <div className="h-px bg-violet-200 my-1" />
-            <div className="text-3xl font-extrabold text-violet-700">12,000+</div>
-            <p className="text-sm font-semibold text-violet-800">AI insights generated</p>
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-7 flex flex-col justify-center gap-3 shadow-sm">
+            <div className="text-3xl font-extrabold text-violet-700 tabular-nums">₹2.4Cr+</div>
+            <p className="text-xs font-semibold text-gray-700">in transactions tracked</p>
+            <div className="h-px bg-gray-200 my-0.5" />
+            <div className="text-2xl font-extrabold text-violet-700 tabular-nums">12,000+</div>
+            <p className="text-xs font-semibold text-gray-700">AI insights generated</p>
           </div>
         </div>
       </section>
 
       {/* ── FAQ ── */}
-      <section className="py-24 px-4 max-w-3xl mx-auto">
-        <div className="text-center mb-12 space-y-3">
-          <span className="text-xs font-bold uppercase tracking-widest text-violet-600">FAQ</span>
-          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-slate-900 font-manrope">
+      <section className="py-16 md:py-20 px-4 max-w-3xl mx-auto">
+        <div className="text-center mb-10 space-y-2">
+          <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-900 font-inter">
             Frequently asked questions
           </h2>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2.5 text-left">
           {faqs.map((faq, i) => (
             <details
               key={i}
-              className="group border border-slate-200 rounded-2xl bg-white overflow-hidden"
+              className="group border border-gray-200 rounded-xl bg-white overflow-hidden shadow-sm"
             >
-              <summary className="flex items-center justify-between px-6 py-5 cursor-pointer font-semibold text-slate-900 text-sm select-none list-none hover:bg-slate-50 transition-colors">
+              <summary className="flex items-center justify-between px-5 py-4 cursor-pointer font-semibold text-gray-900 text-sm select-none list-none hover:bg-gray-50 transition-colors">
                 {faq.q}
-                <span className="ml-4 shrink-0 text-slate-400 group-open:rotate-45 transition-transform duration-200 text-xl leading-none">
+                <span className="ml-4 shrink-0 text-gray-400 group-open:rotate-45 transition-transform duration-200 text-lg leading-none">
                   +
                 </span>
               </summary>
-              <div className="px-6 pb-5 pt-1 text-sm text-slate-600 leading-relaxed border-t border-slate-100">
+              <div className="px-5 pb-4 pt-1 text-xs text-gray-600 leading-relaxed border-t border-gray-100 font-medium">
                 {faq.a}
               </div>
             </details>
@@ -421,23 +403,19 @@ const LandingPage = () => {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-24 px-4 max-w-4xl mx-auto">
-        <div className="rounded-3xl bg-gradient-to-br from-violet-600 to-cyan-500 p-10 md:p-16 text-center space-y-6 shadow-2xl shadow-violet-300/40 relative overflow-hidden">
-          {/* Glow blobs */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
-
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white font-manrope relative">
+      <section className="py-16 md:py-20 px-4 max-w-4xl mx-auto">
+        <div className="rounded-2xl bg-violet-600 p-8 md:p-12 text-center space-y-5 shadow-sm text-white relative overflow-hidden">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-white font-inter">
             Start managing your money today
           </h2>
-          <p className="text-white/80 text-sm md:text-base max-w-xl mx-auto relative">
-            Free forever. No credit card. Real AI insights in under 2 minutes.
+          <p className="text-violet-100 text-xs md:text-sm max-w-xl mx-auto font-medium">
+            Free forever. No credit card required. Real AI insights in under 2 minutes.
           </p>
-          <div className="relative">
+          <div className="pt-1">
             <Link href="/dashboard">
               <Button
                 size="lg"
-                className="bg-white text-violet-700 hover:bg-slate-50 font-extrabold px-10 py-6 rounded-xl shadow-lg text-base transition-all duration-200 hover:scale-105"
+                className="bg-white text-violet-700 hover:bg-gray-50 font-bold px-8 py-3 rounded-xl shadow-sm text-sm transition-all"
               >
                 Get Started — It&apos;s Free
               </Button>

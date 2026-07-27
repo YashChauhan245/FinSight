@@ -42,17 +42,10 @@ export default function NavbarClient() {
     { label: "AI Demo", href: "/#ai-demo" },
   ];
 
-  const navLinksSignedIn = [
-    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "New Transaction", href: "/transaction/create", icon: PenBox },
-  ];
-
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/90 backdrop-blur-xl border-b border-slate-200/90 shadow-[0_8px_30px_rgb(0,0,0,0.06)] py-2.5"
-          : "bg-white/80 backdrop-blur-md border-b border-slate-200/70 py-3"
+      className={`fixed top-0 w-full z-50 transition-all duration-200 bg-white border-b border-gray-200/80 ${
+        scrolled ? "shadow-sm py-2.5" : "py-3"
       }`}
       suppressHydrationWarning
     >
@@ -67,7 +60,7 @@ export default function NavbarClient() {
                 width={185}
                 height={52}
                 priority
-                className="h-12 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-11 md:h-12 w-auto object-contain transition-transform duration-200 group-hover:opacity-90"
               />
             </Link>
           </SignedIn>
@@ -80,7 +73,7 @@ export default function NavbarClient() {
                 width={185}
                 height={52}
                 priority
-                className="h-12 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                className="h-11 md:h-12 w-auto object-contain transition-transform duration-200 group-hover:opacity-90"
               />
             </Link>
           </SignedOut>
@@ -88,12 +81,12 @@ export default function NavbarClient() {
 
         {/* Desktop Navigation Links for SignedOut */}
         <SignedOut>
-          <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+          <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-600">
             {navLinksSignedOut.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="relative text-slate-600 hover:text-slate-900 transition-colors py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-gradient-to-r after:from-violet-600 after:to-cyan-500 hover:after:w-full after:transition-all after:duration-300"
+                className="text-gray-600 hover:text-gray-900 transition-colors py-1 font-medium"
               >
                 {link.label}
               </a>
@@ -107,16 +100,16 @@ export default function NavbarClient() {
             <Link href="/dashboard" className="hidden sm:inline-block">
               <Button
                 variant="outline"
-                className="border-slate-200 text-slate-700 hover:bg-slate-100/80 hover:text-slate-900 font-medium text-sm flex items-center gap-2 rounded-xl h-10 px-4 transition-all"
+                className="border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium text-sm flex items-center gap-2 rounded-xl h-9 px-3.5 shadow-sm transition-all"
               >
-                <LayoutDashboard size={16} className="text-violet-600" />
+                <LayoutDashboard size={15} className="text-violet-600" />
                 <span>Dashboard</span>
               </Button>
             </Link>
 
             <Link href="/transaction/create">
-              <Button className="bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 hover:opacity-95 text-white font-medium text-sm flex items-center gap-2 shadow-md shadow-violet-500/20 hover:shadow-lg hover:shadow-violet-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all rounded-xl h-10 px-4">
-                <PenBox size={16} />
+              <Button className="bg-violet-600 hover:bg-violet-700 text-white font-medium text-sm flex items-center gap-2 shadow-sm transition-all rounded-xl h-9 px-4">
+                <PenBox size={15} />
                 <span className="hidden sm:inline">Add Transaction</span>
               </Button>
             </Link>
@@ -126,7 +119,7 @@ export default function NavbarClient() {
                 appearance={{
                   elements: {
                     avatarBox:
-                      "w-9 h-9 border-2 border-slate-200/90 shadow-sm hover:border-violet-400 transition-all rounded-full",
+                      "w-8 h-8 border border-gray-200 shadow-sm hover:border-violet-400 transition-all rounded-full",
                   },
                 }}
               />
@@ -137,14 +130,14 @@ export default function NavbarClient() {
             <SignInButton forceRedirectUrl="/dashboard">
               <Button
                 variant="outline"
-                className="border-slate-200 text-slate-700 hover:bg-slate-100 font-medium rounded-xl h-10 px-4 transition-all"
+                className="border-gray-200 text-gray-700 hover:bg-gray-50 font-medium rounded-xl h-9 px-3.5 shadow-sm transition-all"
               >
                 Login
               </Button>
             </SignInButton>
 
             <Link href="/dashboard">
-              <Button className="bg-gradient-to-r from-violet-600 via-purple-600 to-cyan-500 hover:from-violet-700 hover:to-cyan-600 text-white shadow-md shadow-violet-500/20 hover:shadow-lg transition-all font-semibold text-sm rounded-xl h-10 px-4">
+              <Button className="bg-violet-600 hover:bg-violet-700 text-white shadow-sm font-medium text-sm rounded-xl h-9 px-4 transition-all">
                 <span>Get Started</span>
               </Button>
             </Link>
@@ -153,65 +146,65 @@ export default function NavbarClient() {
           {/* Mobile Hamburger Toggle Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden flex items-center justify-center p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200/80 ml-1"
+            className="md:hidden flex items-center justify-center p-2 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors border border-gray-200 ml-1"
             aria-label="Toggle navigation menu"
           >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileMenuOpen ? <X size={19} /> : <Menu size={19} />}
           </button>
         </div>
       </nav>
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 bg-white/95 backdrop-blur-2xl px-4 pt-3 pb-6 space-y-4 shadow-xl animate-in slide-in-from-top-2 duration-200">
+        <div className="md:hidden border-b border-gray-200 bg-white px-4 pt-3 pb-5 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-200">
           <SignedOut>
-            <div className="flex flex-col space-y-2 pt-2">
+            <div className="flex flex-col space-y-1.5 pt-1">
               {navLinksSignedOut.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-violet-50 hover:text-violet-700 transition-colors"
+                  className="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                 >
                   <span>{link.label}</span>
-                  <ChevronRight size={16} className="text-slate-400" />
+                  <ChevronRight size={16} className="text-gray-400" />
                 </a>
               ))}
             </div>
           </SignedOut>
 
           <SignedIn>
-            <div className="flex flex-col space-y-2 pt-2">
+            <div className="flex flex-col space-y-1.5 pt-1">
               <Link
                 href="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
                   pathname === "/dashboard"
                     ? "bg-violet-50 text-violet-700 font-semibold"
-                    : "text-slate-700 hover:bg-slate-100"
+                    : "text-gray-700 hover:bg-gray-50"
                 }`}
               >
-                <LayoutDashboard size={18} className="text-violet-600" />
+                <LayoutDashboard size={17} className="text-violet-600" />
                 <span>Dashboard</span>
               </Link>
 
               <Link
                 href="/transaction/create"
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
                   pathname === "/transaction/create"
                     ? "bg-violet-50 text-violet-700 font-semibold"
-                    : "text-slate-700 hover:bg-slate-100"
+                    : "text-gray-700 hover:bg-gray-50"
                 }`}
               >
-                <PenBox size={18} className="text-cyan-600" />
+                <PenBox size={17} className="text-violet-600" />
                 <span>Add Transaction</span>
               </Link>
             </div>
           </SignedIn>
 
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 px-3">
-            <span className="flex items-center gap-1.5">
+          <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 px-3">
+            <span className="flex items-center gap-1.5 font-medium">
               <Sparkles size={14} className="text-violet-500" />
               FinSight AI Personal Finance
             </span>

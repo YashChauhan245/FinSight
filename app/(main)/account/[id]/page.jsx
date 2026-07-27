@@ -16,23 +16,23 @@ export default async function AccountPage({ params }) {
   const { transactions, ...account } = accountData;
 
   return (
-    <div className="space-y-8 px-5">
-      <div className="flex gap-4 items-end justify-between">
+    <div className="space-y-8 px-5 font-inter">
+      <div className="flex gap-4 items-end justify-between text-left">
         <div>
-          <h1 className="text-5xl sm:text-6xl font-bold tracking-tight gradient-title capitalize">
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 capitalize font-inter">
             {account.name}
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm text-gray-500 font-medium mt-1">
             {account.type.charAt(0) + account.type.slice(1).toLowerCase()}{" "}
             Account
           </p>
         </div>
 
-        <div className="text-right pb-2">
-          <div className="text-xl sm:text-2xl font-bold">
-            Rs {parseFloat(account.balance).toFixed(2)}
+        <div className="text-right pb-1">
+          <div className="text-xl sm:text-2xl font-bold text-gray-900 tabular-nums">
+            ₹{parseFloat(account.balance).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-gray-500 font-medium mt-0.5">
             {account._count.transactions} Transactions
           </p>
         </div>
@@ -40,14 +40,14 @@ export default async function AccountPage({ params }) {
 
       {/* Chart Section */}
       <Suspense
-        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
+        fallback={<BarLoader className="mt-4" width={"100%"} color="#6366f1" />}
       >
         <AccountChart transactions={transactions} />
       </Suspense>
 
       {/* Transactions Table */}
       <Suspense
-        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
+        fallback={<BarLoader className="mt-4" width={"100%"} color="#6366f1" />}
       >
         <TransactionTable transactions={transactions} />
       </Suspense>

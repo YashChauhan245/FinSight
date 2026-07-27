@@ -93,34 +93,34 @@ export function SmartAlertsWidget({ show = true, transactions = [] }) {
   if (!show) return null;
 
   return (
-    <Card className="border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
-      <CardHeader className="pb-4 text-left border-b border-slate-100">
+    <Card className="border border-gray-200 bg-white shadow-sm hover:border-gray-300 transition-all rounded-xl font-inter">
+      <CardHeader className="pb-4 p-5 sm:p-6 text-left border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-amber-100 text-amber-700">
+          <div className="p-2 rounded-lg bg-amber-50 border border-amber-100 text-amber-700">
             <Bell className="h-5 w-5" />
           </div>
           <div>
-            <CardTitle className="text-lg font-bold text-slate-900 font-manrope">
+            <CardTitle className="text-base font-bold text-gray-900 font-inter">
               Smart Alerts
             </CardTitle>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-gray-500 mt-0.5">
               Recurring reminders and unusual spending detection
             </p>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="pt-4">
+      <CardContent className="p-5 sm:p-6 pt-4 sm:pt-5">
         <div className="grid gap-6 md:grid-cols-2 text-left">
           {/* ── Recurring Reminders ── */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
-              <RefreshCw className="h-4 w-4 text-cyan-600" />
+            <div className="flex items-center gap-2 text-xs font-bold text-gray-800 uppercase tracking-wider">
+              <RefreshCw className="h-3.5 w-3.5 text-violet-600" />
               Recurring Reminders
             </div>
             {recurringTransactions.length === 0 ? (
-              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 flex items-center gap-3 text-slate-500">
-                <CheckCircle2 className="h-4 w-4 text-slate-300 shrink-0" />
+              <div className="rounded-lg border border-gray-200/80 bg-gray-50/70 p-3.5 flex items-center gap-3 text-gray-500">
+                <CheckCircle2 className="h-4 w-4 text-gray-300 shrink-0" />
                 <p className="text-xs font-medium">
                   No recurring transactions yet. Mark transactions as recurring when adding them.
                 </p>
@@ -134,17 +134,17 @@ export function SmartAlertsWidget({ show = true, transactions = [] }) {
                   return (
                     <div
                       key={t.id}
-                      className={`flex items-center justify-between p-3 rounded-xl border text-xs ${
+                      className={`flex items-center justify-between p-3 rounded-lg border text-xs transition-colors ${
                         isDueSoon
-                          ? "border-amber-200 bg-amber-50"
-                          : "border-slate-100 bg-slate-50/50"
+                          ? "border-amber-200 bg-amber-50/70"
+                          : "border-gray-200/80 bg-gray-50/50"
                       }`}
                     >
                       <div className="space-y-0.5">
-                        <p className="font-semibold text-slate-800">
+                        <p className="font-semibold text-gray-900">
                           {t.description || t.category}
                         </p>
-                        <div className="flex items-center gap-1.5 text-slate-500">
+                        <div className="flex items-center gap-1.5 text-gray-500">
                           <Calendar className="h-3 w-3" />
                           <span>
                             {INTERVAL_LABELS[t.recurringInterval] ||
@@ -157,17 +157,17 @@ export function SmartAlertsWidget({ show = true, transactions = [] }) {
                       </div>
                       <div className="text-right">
                         <p
-                          className={`font-bold ${
+                          className={`font-bold tabular-nums ${
                             t.type === "EXPENSE"
                               ? "text-rose-600"
                               : "text-emerald-600"
                           }`}
                         >
-                          {t.type === "EXPENSE" ? "-" : "+"}Rs{" "}
+                          {t.type === "EXPENSE" ? "-" : "+"}₹{" "}
                           {t.amount.toFixed(0)}
                         </p>
                         {isDueSoon && (
-                          <span className="text-amber-600 font-bold text-[10px]">
+                          <span className="text-amber-700 font-bold text-[10px]">
                             Due soon
                           </span>
                         )}
@@ -181,13 +181,13 @@ export function SmartAlertsWidget({ show = true, transactions = [] }) {
 
           {/* ── Anomaly Detection ── */}
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
-              <TrendingUp className="h-4 w-4 text-rose-500" />
+            <div className="flex items-center gap-2 text-xs font-bold text-gray-800 uppercase tracking-wider">
+              <TrendingUp className="h-3.5 w-3.5 text-rose-500" />
               Anomaly Detection
             </div>
             {anomalies.length === 0 ? (
-              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 flex items-center gap-3 text-slate-500">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+              <div className="rounded-lg border border-gray-200/80 bg-gray-50/70 p-3.5 flex items-center gap-3 text-gray-500">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
                 <p className="text-xs font-medium">
                   No unusual spending detected this month. Your spending looks
                   consistent!
@@ -198,24 +198,24 @@ export function SmartAlertsWidget({ show = true, transactions = [] }) {
                 {anomalies.map((a) => (
                   <div
                     key={a.category}
-                    className="flex items-center justify-between p-3 rounded-xl border border-rose-100 bg-rose-50/50 text-xs"
+                    className="flex items-center justify-between p-3 rounded-lg border border-rose-200/80 bg-rose-50/50 text-xs"
                   >
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-1.5">
                         <AlertTriangle className="h-3.5 w-3.5 text-rose-500" />
-                        <p className="font-semibold text-slate-800 capitalize">
+                        <p className="font-semibold text-gray-900 capitalize">
                           {a.category}
                         </p>
                       </div>
-                      <p className="text-slate-500 pl-5">
+                      <p className="text-gray-500 pl-5">
                         Up {a.pctIncrease.toFixed(0)}% vs last month
                       </p>
                     </div>
                     <div className="text-right space-y-0.5">
-                      <p className="font-bold text-rose-600">
-                        Rs {a.thisAmt.toFixed(0)}
+                      <p className="font-bold text-rose-600 tabular-nums">
+                        ₹{a.thisAmt.toFixed(0)}
                       </p>
-                      <p className="text-slate-400">was Rs {a.lastAmt.toFixed(0)}</p>
+                      <p className="text-gray-400 tabular-nums">was ₹{a.lastAmt.toFixed(0)}</p>
                     </div>
                   </div>
                 ))}

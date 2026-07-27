@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Pencil, Check, X, Mail, Loader2, AlertTriangle, TrendingUp, Sparkles } from "lucide-react";
+import { Pencil, Check, X, Mail, Loader2, AlertTriangle } from "lucide-react";
 import useFetch from "@/hooks/use-fetch";
 import { toast } from "sonner";
 
@@ -79,32 +79,32 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
 
   const progressColor =
     percentUsed >= 90
-      ? "bg-gradient-to-r from-rose-500 to-red-600 shadow-sm shadow-rose-200"
+      ? "bg-rose-500"
       : percentUsed >= 75
-      ? "bg-gradient-to-r from-amber-500 to-orange-500 shadow-sm shadow-amber-200"
-      : "bg-gradient-to-r from-emerald-500 to-teal-500 shadow-sm shadow-emerald-200";
+      ? "bg-amber-500"
+      : "bg-emerald-500";
 
   return (
-    <Card className="border border-slate-200/90 bg-white/90 backdrop-blur-md shadow-sm hover:shadow-md transition-shadow text-left rounded-2xl font-jakarta overflow-hidden">
-      <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 gap-4">
+    <Card className="border border-gray-200 bg-white shadow-sm hover:border-gray-300 transition-all text-left rounded-xl font-inter overflow-hidden">
+      <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 p-5 sm:p-6 gap-4">
         <div className="flex-1 space-y-1.5">
           <div className="flex items-center gap-2">
-            <CardTitle className="text-base font-bold text-slate-900 font-jakarta">
+            <CardTitle className="text-base font-bold text-gray-900 font-inter">
               Monthly Budget Progress
             </CardTitle>
-            <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
+            <span className="text-[11px] font-medium text-gray-600 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded-md">
               Default Account
             </span>
           </div>
 
           {isEditing ? (
             <div className="flex items-center gap-2 pt-1">
-              <span className="text-sm font-bold text-slate-700">₹</span>
+              <span className="text-sm font-semibold text-gray-700">₹</span>
               <Input
                 type="number"
                 value={newBudget}
                 onChange={(e) => setNewBudget(e.target.value)}
-                className="w-40 text-xs h-9 border-slate-300 focus-visible:ring-violet-400 font-medium"
+                className="w-40 text-xs h-8 border-gray-200 focus-visible:ring-violet-500 font-medium rounded-lg"
                 placeholder="Enter budget limit"
                 autoFocus
                 disabled={isLoading}
@@ -114,7 +114,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
                 size="sm"
                 onClick={handleUpdateBudget}
                 disabled={isLoading}
-                className="h-9 px-3 text-emerald-700 bg-emerald-50 border-emerald-300 hover:bg-emerald-100 font-bold"
+                className="h-8 px-3 text-white bg-violet-600 hover:bg-violet-700 border-none font-medium text-xs rounded-lg shadow-sm"
               >
                 {isLoading ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -128,7 +128,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
                 size="sm"
                 onClick={handleCancel}
                 disabled={isLoading}
-                className="h-9 px-3 text-slate-600 border-slate-300 hover:bg-slate-100 font-medium"
+                className="h-8 px-3 text-gray-600 border-gray-200 hover:bg-gray-50 font-medium text-xs rounded-lg shadow-sm"
               >
                 <X className="h-3.5 w-3.5" />
                 <span>Cancel</span>
@@ -136,7 +136,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-600 font-medium tabular-nums">
+              <span className="text-xs text-gray-600 font-medium tabular-nums">
                 {initialBudget
                   ? `₹${currentExpenses.toLocaleString("en-IN", { minimumFractionDigits: 0 })} spent of ₹${initialBudget.amount.toLocaleString("en-IN", { minimumFractionDigits: 0 })} limit`
                   : "No monthly budget set — click edit to add your spending limit"}
@@ -145,7 +145,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsEditing(true)}
-                className="h-6 w-6 text-slate-400 hover:text-violet-600 hover:bg-violet-50 transition-colors"
+                className="h-6 w-6 text-gray-400 hover:text-violet-600 hover:bg-violet-50 transition-colors rounded-md"
                 title="Edit Budget"
               >
                 <Pencil className="h-3 w-3" />
@@ -161,7 +161,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
             size="sm"
             onClick={handleResendAlert}
             disabled={sendingEmail}
-            className="shrink-0 text-xs h-9 border-slate-200/90 text-slate-700 hover:bg-slate-100 hover:text-slate-900 gap-2 rounded-xl font-semibold px-3.5"
+            className="shrink-0 text-xs h-9 border-gray-200 text-gray-700 bg-white hover:bg-gray-50 gap-2 rounded-lg font-medium px-3.5 shadow-sm transition-all"
           >
             {sendingEmail ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin text-violet-600" />
@@ -174,19 +174,19 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
       </CardHeader>
 
       {initialBudget && (
-        <CardContent className="pt-0 space-y-3">
+        <CardContent className="p-5 sm:p-6 pt-0 sm:pt-0 space-y-3">
           {/* Progress Bar */}
           <div className="space-y-1.5">
-            <div className="w-full bg-slate-100/90 rounded-full h-3 p-0.5 border border-slate-200/60 overflow-hidden">
+            <div className="w-full bg-gray-100 rounded-full h-2.5 p-0.5 border border-gray-200/60 overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all duration-700 ${progressColor}`}
+                className={`h-full rounded-full transition-all duration-500 ${progressColor}`}
                 style={{ width: `${Math.min(100, percentUsed)}%` }}
               />
             </div>
             <div className="flex items-center justify-between text-[11px] font-semibold tabular-nums">
-              <span className="text-slate-400">0%</span>
+              <span className="text-gray-400">0%</span>
               <span
-                className={`font-bold px-2 py-0.5 rounded-md ${
+                className={`font-semibold px-2 py-0.5 rounded-md ${
                   percentUsed >= 90
                     ? "bg-rose-50 text-rose-700 border border-rose-200"
                     : percentUsed >= 75
@@ -196,14 +196,14 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
               >
                 {percentUsed.toFixed(1)}% Used
               </span>
-              <span className="text-slate-400">100% Target</span>
+              <span className="text-gray-400">100% Target</span>
             </div>
           </div>
 
           {/* Warning Banner */}
           {percentUsed >= 80 && (
             <div
-              className={`flex items-center gap-2 p-3 rounded-xl text-xs font-semibold ${
+              className={`flex items-center gap-2 p-3 rounded-lg text-xs font-medium ${
                 percentUsed >= 100
                   ? "bg-rose-50 border border-rose-200 text-rose-700"
                   : "bg-amber-50 border border-amber-200 text-amber-700"

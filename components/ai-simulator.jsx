@@ -74,17 +74,17 @@ export default function AISimulator() {
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white shadow-xl p-6 space-y-5">
+    <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-6 space-y-4 font-inter text-left">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="p-2 rounded-xl bg-violet-100">
-          <Bot className="h-5 w-5 text-violet-700" />
+        <div className="p-2 rounded-lg bg-violet-50 text-violet-700">
+          <Bot className="h-4 w-4 text-violet-700" />
         </div>
         <div>
-          <p className="text-sm font-bold text-slate-900">FinSight AI</p>
-          <p className="text-xs text-slate-400">Demo — powered by Gemini</p>
+          <p className="text-sm font-bold text-gray-900 font-inter">FinSight AI</p>
+          <p className="text-xs text-gray-500 font-medium">Demo — powered by Gemini</p>
         </div>
-        <span className="ml-auto flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+        <span className="ml-auto flex items-center gap-1.5 text-xs font-medium text-emerald-600">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           Online
         </span>
@@ -98,10 +98,10 @@ export default function AISimulator() {
             key={p.label}
             onClick={() => handlePreset(p)}
             disabled={loading}
-            className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition-all disabled:opacity-50 ${
+            className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-all disabled:opacity-50 ${
               activePreset === p.label
-                ? "bg-violet-600 text-white border-violet-600"
-                : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-violet-50 hover:text-violet-700 hover:border-violet-200"
+                ? "bg-violet-600 text-white border-violet-600 shadow-sm"
+                : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-violet-50 hover:text-violet-700 hover:border-violet-200"
             }`}
           >
             {p.label}
@@ -110,19 +110,19 @@ export default function AISimulator() {
       </div>
 
       {/* Output */}
-      <div className="min-h-[100px] rounded-xl bg-slate-50 border border-slate-100 p-4 text-sm text-left">
+      <div className="min-h-[95px] rounded-xl bg-gray-50 border border-gray-200/80 p-4 text-xs font-medium text-left">
         {loading ? (
-          <div className="flex items-center gap-2 text-slate-400">
-            <Loader2 className="h-4 w-4 animate-spin text-violet-500" />
+          <div className="flex items-center gap-2 text-gray-500">
+            <Loader2 className="h-4 w-4 animate-spin text-violet-600" />
             <span className="text-xs italic">FinSight AI is thinking...</span>
           </div>
         ) : displayedText ? (
-          <p className="text-slate-800 leading-relaxed whitespace-pre-wrap font-medium">
+          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-medium">
             {displayedText}
-            <span className="animate-pulse text-violet-400">|</span>
+            <span className="animate-pulse text-violet-500">|</span>
           </p>
         ) : (
-          <p className="text-slate-400 text-xs font-medium">
+          <p className="text-gray-400 text-xs font-medium">
             Click a question above or type your own to see a demo response.
           </p>
         )}
@@ -136,13 +136,13 @@ export default function AISimulator() {
           onChange={(e) => setCustomQuery(e.target.value)}
           placeholder="Ask your own question..."
           disabled={loading}
-          className="flex-1 text-sm border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white font-inter disabled:opacity-50"
+          className="flex-1 text-xs border border-gray-200 rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white font-inter text-gray-900 disabled:opacity-50"
         />
         <button
           suppressHydrationWarning
           type="submit"
           disabled={loading || !customQuery.trim()}
-          className="p-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white disabled:opacity-40 transition-colors"
+          className="p-2.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white disabled:opacity-40 transition-colors shadow-sm"
         >
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -152,7 +152,7 @@ export default function AISimulator() {
         </button>
       </form>
 
-      <p className="text-[10px] text-slate-400 text-center font-inter">
+      <p className="text-[11px] text-gray-400 text-center font-inter">
         Demo responses only. Real app uses your actual transaction data.
       </p>
     </div>
