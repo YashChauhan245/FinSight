@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -40,8 +41,14 @@ export function AIAssistantBox({ show = true }) {
     <Card className="border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
       <CardHeader className="pb-4 text-left border-b border-slate-100">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-violet-100 text-violet-700">
-            <Sparkles className="h-5 w-5" />
+          <div className="p-1.5 rounded-xl bg-slate-100/90 border border-slate-200/80 flex items-center justify-center">
+            <Image
+              src="/icon.png"
+              alt="FinSight Icon"
+              width={32}
+              height={32}
+              className="h-7 w-7 object-contain"
+            />
           </div>
           <div>
             <CardTitle className="text-lg font-bold text-slate-900 font-manrope">
