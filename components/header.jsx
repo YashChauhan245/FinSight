@@ -1,75 +1,96 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { PenBox, LayoutDashboard } from "lucide-react";
+import { PenBox, LayoutDashboard, Sun, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import { checkUser } from "@/lib/checkUser";
 
-const Header =async () => {
-  await checkUser()
-  return (
-    <header className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b">
-      <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/logoo.png"
-            alt="FinSight Logo"
-            width={100}
-            height={80}
-            priority
-            className="h-12 md:h-14 w-auto object-contain drop-shadow-[0_0_14px_rgba(59,130,246,0.45)]"
-          />
-        </Link>
+const Header = async () => {
+  await checkUser();
 
-        {/* Navigation Links - Different for signed in/out users */}
-        <div className="hidden md:flex items-center space-x-8">
-          <SignedOut>
-            <a href="#features" className="text-gray-600 hover:text-blue-600">
+  return (
+    <header className="fixed top-0 w-full bg-white/85 backdrop-blur-md z-50 border-b border-slate-200/80 shadow-sm" suppressHydrationWarning>
+      <nav className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between" suppressHydrationWarning>
+        {/* Brand Logo */}
+        <SignedIn>
+          <Link href="/dashboard" className="flex items-center group">
+            <Image
+              src="/logoo.png"
+              alt="FinSight Logo"
+              width={160}
+              height={44}
+              priority
+              className="h-11 md:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            />
+          </Link>
+        </SignedIn>
+        <SignedOut>
+          <Link href="/" className="flex items-center group">
+            <Image
+              src="/logoo.png"
+              alt="FinSight Logo"
+              width={160}
+              height={44}
+              priority
+              className="h-11 md:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
+            />
+          </Link>
+        </SignedOut>
+
+        {/* Navigation Links */}
+        <SignedOut>
+          <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+            <a href="#features" className="hover:text-slate-900 transition-colors">
               Features
             </a>
-            <a
-              href="#testimonials"
-              className="text-gray-600 hover:text-blue-600"
-            >
-              Testimonials
+            <a href="#how-it-works" className="hover:text-slate-900 transition-colors">
+              How It Works
             </a>
-          </SignedOut>
-        </div>
+            <a href="#ai-demo" className="hover:text-slate-900 transition-colors">
+              AI Demo
+            </a>
+          </div>
+        </SignedOut>
 
         {/* Action Buttons */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3" suppressHydrationWarning>
+
           <SignedIn>
-            <Link
-              href="/dashboard"
-              className="text-gray-600 hover:text-blue-600 flex items-center gap-2"
-            >
-              <Button variant="outline">
-                <LayoutDashboard size={18} />
+            <Link href="/dashboard">
+              <Button variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-100 font-medium text-sm flex items-center gap-2">
+                <LayoutDashboard size={16} />
                 <span className="hidden md:inline">Dashboard</span>
               </Button>
             </Link>
             <a href="/transaction/create">
-              <Button className="flex items-center gap-2">
-                <PenBox size={18} />
+              <Button className="bg-gradient-to-r from-violet-600 to-cyan-600 text-white hover:opacity-90 font-medium text-sm flex items-center gap-2 shadow-md hover:shadow-lg transition-all">
+                <PenBox size={16} />
                 <span className="hidden md:inline">Add Transaction</span>
               </Button>
             </a>
-          </SignedIn>
-          <SignedOut>
-            <SignInButton forceRedirectUrl="/dashboard">
-              <Button variant="outline">Login</Button>
-            </SignInButton>
-          </SignedOut>
-          <SignedIn>
             <UserButton
               appearance={{
                 elements: {
-                  avatarBox: "w-10 h-10",
+                  avatarBox: "w-9 h-9 border border-slate-200 shadow-sm",
                 },
               }}
             />
           </SignedIn>
+
+          <SignedOut>
+            <SignInButton forceRedirectUrl="/dashboard">
+              <Button variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-100">
+                Login
+              </Button>
+            </SignInButton>
+
+            <Link href="/dashboard">
+              <Button className="bg-gradient-to-r from-violet-600 to-cyan-500 hover:from-violet-700 hover:to-cyan-600 text-white shadow-md hover:shadow-lg transition-all font-semibold text-sm">
+                <span>Get Started</span>
+              </Button>
+            </Link>
+          </SignedOut>
         </div>
       </nav>
     </header>

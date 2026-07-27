@@ -18,18 +18,16 @@ const serializeTransaction = (obj) => {
 };
 
 export async function getUserAccounts() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
-
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
-
-  if (!user) {
-    throw new Error("User not found");
-  }
-
   try {
+    const { userId } = await auth();
+    if (!userId) return [];
+
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) return [];
+
     const accounts = await db.account.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
@@ -42,12 +40,13 @@ export async function getUserAccounts() {
       },
     });
 
-    // Serialize accounts before sending to client
-    const serializedAccounts = accounts.map(serializeTransaction);
-
-    return serializedAccounts;
+    return accounts.map(serializeTransaction);
   } catch (error) {
-    console.error(error.message);
+    if (error?.digest === "DYNAMIC_SERVER_USAGE" || error?.message?.includes("Dynamic server usage")) {
+      throw error;
+    }
+    console.error("getUserAccounts error:", error.message);
+    return [];
   }
 }
 
@@ -62,7 +61,7 @@ export async function createAccount(data) {
     // Check rate limit
     const decision = await aj.protect(req, {
       userId,
-      requested: 1, // Specify how many tokens to consume
+      requested: 1,
     });
 
     if (decision.isDenied()) {
@@ -70,10 +69,7 @@ export async function createAccount(data) {
         const { remaining, reset } = decision.reason;
         console.error({
           code: "RATE_LIMIT_EXCEEDED",
-          details: {
-            remaining,
-            resetInSeconds: reset,
-          },
+          details: { remaining, resetInSeconds: reset },
         });
 
         throw new Error("Too many requests. Please try again later.");
@@ -90,23 +86,18 @@ export async function createAccount(data) {
       throw new Error("User not found");
     }
 
-    // Convert balance to float before saving
     const balanceFloat = parseFloat(data.balance);
     if (isNaN(balanceFloat)) {
       throw new Error("Invalid balance amount");
     }
 
-    // Check if this is the user's first account
     const existingAccounts = await db.account.findMany({
       where: { userId: user.id },
     });
 
-    // If it's the first account, make it default regardless of user input
-    // If not, use the user's preference
     const shouldBeDefault =
       existingAccounts.length === 0 ? true : data.isDefault;
 
-    // If this account should be default, unset other default accounts
     if (shouldBeDefault) {
       await db.account.updateMany({
         where: { userId: user.id, isDefault: true },
@@ -114,43 +105,49 @@ export async function createAccount(data) {
       });
     }
 
-    // Create new account
     const account = await db.account.create({
       data: {
         ...data,
         balance: balanceFloat,
         userId: user.id,
-        isDefault: shouldBeDefault, // Override the isDefault based on our logic
+        isDefault: shouldBeDefault,
       },
     });
 
-    // Serialize the account before returning
     const serializedAccount = serializeTransaction(account);
 
     revalidatePath("/dashboard");
     return { success: true, data: serializedAccount };
   } catch (error) {
-    throw new Error(error.message);
+    if (error?.digest === "DYNAMIC_SERVER_USAGE" || error?.message?.includes("Dynamic server usage")) {
+      throw error;
+    }
+    return { success: false, error: error.message };
   }
 }
 
 export async function getDashboardData() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
+  try {
+    const { userId } = await auth();
+    if (!userId) return [];
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
 
-  if (!user) {
-    throw new Error("User not found");
+    if (!user) return [];
+
+    const transactions = await db.transaction.findMany({
+      where: { userId: user.id },
+      orderBy: { date: "desc" },
+    });
+
+    return transactions.map(serializeTransaction);
+  } catch (error) {
+    if (error?.digest === "DYNAMIC_SERVER_USAGE" || error?.message?.includes("Dynamic server usage")) {
+      throw error;
+    }
+    console.error("getDashboardData error:", error.message);
+    return [];
   }
-
-  // Get all user transactions
-  const transactions = await db.transaction.findMany({
-    where: { userId: user.id },
-    orderBy: { date: "desc" },
-  });
-
-  return transactions.map(serializeTransaction);
 }

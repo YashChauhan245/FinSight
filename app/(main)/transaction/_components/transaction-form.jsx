@@ -118,6 +118,7 @@ export function AddTransactionForm({
       reset();
       router.push(`/account/${transactionResult.data.accountId}`);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionResult, transactionLoading, editMode]);
 
   const type = watch("type");
@@ -180,7 +181,7 @@ export function AddTransactionForm({
             <SelectContent>
               {accounts.map((account) => (
                 <SelectItem key={account.id} value={account.id}>
-                  {account.name} (${parseFloat(account.balance).toFixed(2)})
+                  {account.name} (Rs {parseFloat(account.balance).toFixed(2)})
                 </SelectItem>
               ))}
               <CreateAccountDrawer>

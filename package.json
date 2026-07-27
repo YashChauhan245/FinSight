@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "email": "email dev",
     "build": "next build",
     "start": "next start",
@@ -46,6 +46,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "autoprefixer": "^10.5.4",
     "eslint": "^8",
     "eslint-config-next": "15.0.5",
     "postcss": "^8",

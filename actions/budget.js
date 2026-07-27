@@ -7,15 +7,13 @@ import { revalidatePath } from "next/cache";
 export async function getCurrentBudget(accountId) {
   try {
     const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    if (!userId) return null;
 
     const user = await db.user.findUnique({
       where: { clerkUserId: userId },
     });
 
-    if (!user) {
-      throw new Error("User not found");
-    }
+    if (!user) return null;
 
     const budget = await db.budget.findFirst({
       where: {
@@ -58,8 +56,11 @@ export async function getCurrentBudget(accountId) {
         : 0,
     };
   } catch (error) {
-    console.error("Error fetching budget:", error);
-    throw error;
+    if (error?.digest === "DYNAMIC_SERVER_USAGE" || error?.message?.includes("Dynamic server usage")) {
+      throw error;
+    }
+    console.error("Error fetching budget:", error.message);
+    return null;
   }
 }
 
@@ -74,7 +75,6 @@ export async function updateBudget(amount) {
 
     if (!user) throw new Error("User not found");
 
-    // Update or create budget
     const budget = await db.budget.upsert({
       where: {
         userId: user.id,
@@ -94,7 +94,10 @@ export async function updateBudget(amount) {
       data: { ...budget, amount: budget.amount.toNumber() },
     };
   } catch (error) {
-    console.error("Error updating budget:", error);
+    if (error?.digest === "DYNAMIC_SERVER_USAGE" || error?.message?.includes("Dynamic server usage")) {
+      throw error;
+    }
+    console.error("Error updating budget:", error.message);
     return { success: false, error: error.message };
   }
 }

@@ -1,15 +1,9 @@
 "use server";
 
 import { db } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import { subDays } from "date-fns";
 
-// const ACCOUNT_ID = "89fb49e6-0d48-4991-a5cd-72e404f51ac8";
-const ACCOUNT_ID = "4e6ad60a-b2f8-4ef1-acd8-16886dc67657";
-
-// const USER_ID = "47eda013-ba42-4c17-b6b2-eef5fd8da48b";
-const USER_ID = "e4252553-7950-4b6c-b675-70743761c9d2";
-
-// Categories with their typical amount ranges
 const CATEGORIES = {
   INCOME: [
     { name: "salary", range: [5000, 8000] },
@@ -31,12 +25,10 @@ const CATEGORIES = {
   ],
 };
 
-// Helper to generate random amount within a range
 function getRandomAmount(min, max) {
   return Number((Math.random() * (max - min) + min).toFixed(2));
 }
 
-// Helper to get random category with amount
 function getRandomCategory(type) {
   const categories = CATEGORIES[type];
   const category = categories[Math.floor(Math.random() * categories.length)];
@@ -44,20 +36,65 @@ function getRandomCategory(type) {
   return { category: category.name, amount };
 }
 
-export async function seedTransactions() {
+export async function seedTransactionsForUser(targetUserId) {
   try {
-    // Generate 90 days of transactions
+    let userId = targetUserId;
+
+    if (!userId) {
+      const { userId: clerkUserId } = await auth();
+      if (!clerkUserId) throw new Error("Unauthorized");
+      const user = await db.user.findUnique({
+        where: { clerkUserId },
+      });
+      if (!user) throw new Error("User not found");
+      userId = user.id;
+    }
+
+    // 1. Ensure user has a default account
+    let account = await db.account.findFirst({
+      where: { userId, isDefault: true },
+    });
+
+    if (!account) {
+      account = await db.account.findFirst({
+        where: { userId },
+      });
+    }
+
+    if (!account) {
+      account = await db.account.create({
+        data: {
+          name: "Main Checking Account",
+          type: "CURRENT",
+          balance: 25000,
+          isDefault: true,
+          userId,
+        },
+      });
+    }
+
+    // 2. Ensure user has a budget set up
+    const existingBudget = await db.budget.findUnique({
+      where: { userId },
+    });
+    if (!existingBudget) {
+      await db.budget.create({
+        data: {
+          userId,
+          amount: 15000,
+        },
+      });
+    }
+
+    // 3. Generate 180 days of transactions (6 months)
     const transactions = [];
     let totalBalance = 0;
 
-    for (let i = 90; i >= 0; i--) {
+    for (let i = 180; i >= 0; i--) {
       const date = subDays(new Date(), i);
-
-      // Generate 1-3 transactions per day
       const transactionsPerDay = Math.floor(Math.random() * 3) + 1;
 
       for (let j = 0; j < transactionsPerDay; j++) {
-        // 40% chance of income, 60% chance of expense
         const type = Math.random() < 0.4 ? "INCOME" : "EXPENSE";
         const { category, amount } = getRandomCategory(type);
 
@@ -71,8 +108,8 @@ export async function seedTransactions() {
           date,
           category,
           status: "COMPLETED",
-          userId: USER_ID,
-          accountId: ACCOUNT_ID,
+          userId,
+          accountId: account.id,
           createdAt: date,
           updatedAt: date,
         };
@@ -82,31 +119,31 @@ export async function seedTransactions() {
       }
     }
 
-    // Insert transactions in batches and update account balance
     await db.$transaction(async (tx) => {
-      // Clear existing transactions
       await tx.transaction.deleteMany({
-        where: { accountId: ACCOUNT_ID },
+        where: { accountId: account.id },
       });
 
-      // Insert new transactions
       await tx.transaction.createMany({
         data: transactions,
       });
 
-      // Update account balance
       await tx.account.update({
-        where: { id: ACCOUNT_ID },
-        data: { balance: totalBalance },
+        where: { id: account.id },
+        data: { balance: Math.max(15000, totalBalance) },
       });
     });
 
     return {
       success: true,
-      message: `Created ${transactions.length} transactions`,
+      message: `Created ${transactions.length} transactions for account ${account.name}`,
     };
   } catch (error) {
     console.error("Error seeding transactions:", error);
     return { success: false, error: error.message };
   }
+}
+
+export async function seedTransactions() {
+  return seedTransactionsForUser();
 }
