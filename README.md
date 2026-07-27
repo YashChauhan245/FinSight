@@ -8,7 +8,7 @@ It provides real-time cashflow analytics, automated budget burn-rate tracking, O
 
 ## 🔗 Links
 
-- **Live Application**: [https://your-finsight-app.vercel.app](https://your-finsight-app.vercel.app)
+- **Live Application**: [https://finsight-finance-ai.vercel.app](https://finsight-finance-ai.vercel.app)
 - **Source Code**: [https://github.com/YashChauhan245/FinSight](https://github.com/YashChauhan245/FinSight)
 
 ---
@@ -145,5 +145,3 @@ To verify ESLint compliance across all pages and actions:
 ```bash
 npm run lint
 ```
-
----
