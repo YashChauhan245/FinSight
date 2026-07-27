@@ -6,12 +6,28 @@ import { revalidatePath } from "next/cache";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import aj from "@/lib/arcjet";
 import { request } from "@arcjet/next";
+import fs from "fs";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+function getGeminiApiKey() {
+  try {
+    if (fs.existsSync(".env")) {
+      const envContent = fs.readFileSync(".env", "utf8");
+      const lines = envContent.split("\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("GEMINI_API_KEY=")) {
+          const val = trimmed.replace("GEMINI_API_KEY=", "").trim();
+          if (val) return val;
+        }
+      }
+    }
+  } catch (e) {}
+  return process.env.GEMINI_API_KEY || "";
+}
 
 const serializeAmount = (obj) => ({
   ...obj,
-  amount: obj.amount.toNumber(),
+  amount: typeof obj.amount?.toNumber === "function" ? obj.amount.toNumber() : Number(obj.amount) || 0,
 });
 
 // Create Transaction
@@ -20,30 +36,27 @@ export async function createTransaction(data) {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
-    // Get request data for ArcJet
-    const req = await request();
-
-    // Check rate limit
-    const decision = await aj.protect(req, {
-      userId,
-      requested: 1, // Specify how many tokens to consume
-    });
-
-    if (decision.isDenied()) {
-      if (decision.reason.isRateLimit()) {
-        const { remaining, reset } = decision.reason;
-        console.error({
-          code: "RATE_LIMIT_EXCEEDED",
-          details: {
-            remaining,
-            resetInSeconds: reset,
-          },
+    // Protect via Arcjet if key is configured
+    if (process.env.ARCJET_KEY) {
+      try {
+        const req = await request();
+        const decision = await aj.protect(req, {
+          userId,
+          requested: 1,
         });
 
-        throw new Error("Too many requests. Please try again later.");
+        if (decision.isDenied()) {
+          if (decision.reason.isRateLimit()) {
+            throw new Error("Too many requests. Please try again later.");
+          }
+          throw new Error("Request blocked by security rules");
+        }
+      } catch (arcjetErr) {
+        if (arcjetErr.message?.includes("Too many requests")) {
+          throw arcjetErr;
+        }
+        console.warn("Arcjet protection warning bypassed:", arcjetErr?.message);
       }
-
-      throw new Error("Request blocked");
     }
 
     const user = await db.user.findUnique({
@@ -62,22 +75,34 @@ export async function createTransaction(data) {
     });
 
     if (!account) {
-      throw new Error("Account not found");
+      throw new Error("Account not found. Please select a valid account.");
     }
 
+    const numAmount = parseFloat(data.amount);
+    if (isNaN(numAmount) || numAmount <= 0) {
+      throw new Error("Please enter a valid amount greater than 0");
+    }
+
+    const txDate = data.date ? new Date(data.date) : new Date();
+
     // Calculate new balance
-    const balanceChange = data.type === "EXPENSE" ? -data.amount : data.amount;
-    const newBalance = account.balance.toNumber() + balanceChange;
+    const balanceChange = data.type === "EXPENSE" ? -numAmount : numAmount;
+    const currentBalance = typeof account.balance?.toNumber === "function"
+      ? account.balance.toNumber()
+      : Number(account.balance) || 0;
+    const newBalance = currentBalance + balanceChange;
 
     // Create transaction and update account balance
     const transaction = await db.$transaction(async (tx) => {
       const newTransaction = await tx.transaction.create({
         data: {
           ...data,
+          amount: numAmount,
+          date: txDate,
           userId: user.id,
           nextRecurringDate:
             data.isRecurring && data.recurringInterval
-              ? calculateNextRecurringDate(data.date, data.recurringInterval)
+              ? calculateNextRecurringDate(txDate, data.recurringInterval)
               : null,
         },
       });
@@ -95,7 +120,8 @@ export async function createTransaction(data) {
 
     return { success: true, data: serializeAmount(transaction) };
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Create transaction error details:", error);
+    throw new Error(error.message || "Failed to create transaction");
   }
 }
 
@@ -145,16 +171,22 @@ export async function updateTransaction(id, data) {
 
     if (!originalTransaction) throw new Error("Transaction not found");
 
+    const numAmount = parseFloat(data.amount) || 0;
+    const oldAmount = typeof originalTransaction.amount?.toNumber === "function"
+      ? originalTransaction.amount.toNumber()
+      : Number(originalTransaction.amount) || 0;
+
     // Calculate balance changes
     const oldBalanceChange =
       originalTransaction.type === "EXPENSE"
-        ? -originalTransaction.amount.toNumber()
-        : originalTransaction.amount.toNumber();
+        ? -oldAmount
+        : oldAmount;
 
     const newBalanceChange =
-      data.type === "EXPENSE" ? -data.amount : data.amount;
+      data.type === "EXPENSE" ? -numAmount : numAmount;
 
     const netBalanceChange = newBalanceChange - oldBalanceChange;
+    const txDate = data.date ? new Date(data.date) : new Date();
 
     // Update transaction and account balance in a transaction
     const transaction = await db.$transaction(async (tx) => {
@@ -165,9 +197,11 @@ export async function updateTransaction(id, data) {
         },
         data: {
           ...data,
+          amount: numAmount,
+          date: txDate,
           nextRecurringDate:
             data.isRecurring && data.recurringInterval
-              ? calculateNextRecurringDate(data.date, data.recurringInterval)
+              ? calculateNextRecurringDate(txDate, data.recurringInterval)
               : null,
         },
       });
@@ -190,7 +224,8 @@ export async function updateTransaction(id, data) {
 
     return { success: true, data: serializeAmount(transaction) };
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Update transaction error details:", error);
+    throw new Error(error.message || "Failed to update transaction");
   }
 }
 
@@ -230,7 +265,12 @@ export async function getUserTransactions(query = {}) {
 // Scan Receipt
 export async function scanReceipt(file) {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const apiKey = getGeminiApiKey();
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is missing in .env");
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
 
     // Convert File to ArrayBuffer
     const arrayBuffer = await file.arrayBuffer();
@@ -254,18 +294,41 @@ export async function scanReceipt(file) {
         "category": "string"
       }
 
-      If its not a recipt, return an empty object
+      If its not a receipt, return an empty object
     `;
 
-    const result = await model.generateContent([
-      {
-        inlineData: {
-          data: base64String,
-          mimeType: file.type,
-        },
-      },
-      prompt,
-    ]);
+    const modelsToTry = [
+      "gemini-2.5-flash",
+      "gemini-2.0-flash",
+      "gemini-2.0-flash-lite",
+      "gemini-1.5-flash-8b"
+    ];
+
+    let result = null;
+    let lastErr = "";
+
+    for (const modelName of modelsToTry) {
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        result = await model.generateContent([
+          {
+            inlineData: {
+              data: base64String,
+              mimeType: file.type || "image/jpeg",
+            },
+          },
+          prompt,
+        ]);
+        if (result) break;
+      } catch (err) {
+        lastErr = err?.message || String(err);
+        console.warn(`Receipt scan model ${modelName} failed:`, lastErr);
+      }
+    }
+
+    if (!result) {
+      throw new Error(`Receipt scan error: ${lastErr}`);
+    }
 
     const response = await result.response;
     const text = response.text();
@@ -274,11 +337,11 @@ export async function scanReceipt(file) {
     try {
       const data = JSON.parse(cleanedText);
       return {
-        amount: parseFloat(data.amount),
-        date: new Date(data.date),
-        description: data.description,
-        category: data.category,
-        merchantName: data.merchantName,
+        amount: parseFloat(data.amount) || 0,
+        date: data.date ? new Date(data.date) : new Date(),
+        description: data.description || "",
+        category: data.category || "other-expense",
+        merchantName: data.merchantName || "",
       };
     } catch (parseError) {
       console.error("Error parsing JSON response:", parseError);
@@ -286,7 +349,7 @@ export async function scanReceipt(file) {
     }
   } catch (error) {
     console.error("Error scanning receipt:", error);
-    throw new Error("Failed to scan receipt");
+    throw new Error(error.message || "Failed to scan receipt");
   }
 }
 

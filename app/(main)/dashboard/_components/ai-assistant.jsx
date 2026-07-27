@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Send, Loader2, Bot } from "lucide-react";
+import { Sparkles, Send, Loader2, Bot, CornerDownLeft } from "lucide-react";
 import { getAIFinanceInsight } from "@/actions/ai";
 
 const PRESET_QUERIES = [
@@ -38,10 +38,10 @@ export function AIAssistantBox({ show = true }) {
   };
 
   return (
-    <Card className="border border-slate-200 bg-white shadow-sm hover:shadow-md transition-shadow">
-      <CardHeader className="pb-4 text-left border-b border-slate-100">
+    <Card className="border border-slate-200/90 bg-white/90 backdrop-blur-md shadow-sm hover:shadow-md transition-shadow font-jakarta rounded-2xl overflow-hidden">
+      <CardHeader className="pb-4 text-left border-b border-slate-100/90 bg-slate-50/40">
         <div className="flex items-center gap-3">
-          <div className="p-1.5 rounded-xl bg-slate-100/90 border border-slate-200/80 flex items-center justify-center">
+          <div className="p-1.5 rounded-xl bg-white border border-slate-200/80 shadow-sm flex items-center justify-center">
             <Image
               src="/icon.png"
               alt="FinSight Icon"
@@ -51,18 +51,20 @@ export function AIAssistantBox({ show = true }) {
             />
           </div>
           <div>
-            <CardTitle className="text-lg font-bold text-slate-900 font-manrope">
-              AI Finance Assistant
-            </CardTitle>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Powered by Gemini — answers based on your real transaction data
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-base font-bold text-slate-900 font-jakarta">
+                AI Finance Assistant
+              </CardTitle>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5 font-medium">
+              Context-aware financial analysis trained on your real transaction data
             </p>
           </div>
         </div>
       </CardHeader>
 
       <CardContent className="space-y-4 pt-4">
-        {/* Preset Prompt Buttons */}
+        {/* Preset Prompt Filter Chips */}
         <div className="flex flex-wrap gap-2">
           {PRESET_QUERIES.map((preset, idx) => (
             <button
@@ -71,37 +73,39 @@ export function AIAssistantBox({ show = true }) {
               suppressHydrationWarning
               onClick={() => handleSend(preset.query)}
               disabled={loading}
-              className="text-xs bg-slate-100 hover:bg-violet-50 hover:text-violet-700 hover:border-violet-200 text-slate-700 font-semibold px-3 py-1.5 rounded-lg border border-slate-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-xs bg-slate-100/80 hover:bg-violet-50 hover:text-violet-700 hover:border-violet-200 text-slate-700 font-semibold px-3 py-1.5 rounded-xl border border-slate-200/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {preset.label}
             </button>
           ))}
         </div>
 
-        {/* Response Area */}
-        <div className="rounded-xl bg-slate-50 border border-slate-100 min-h-[100px] p-4 flex items-start text-left">
+        {/* Response Container */}
+        <div className="rounded-2xl bg-slate-50/80 border border-slate-200/70 min-h-[110px] p-4 flex items-start text-left">
           {loading ? (
-            <div className="flex items-center gap-3 text-slate-500">
+            <div className="flex items-center gap-3 text-slate-600 my-auto">
               <Loader2 className="h-4 w-4 animate-spin shrink-0 text-violet-600" />
-              <p className="text-sm italic">FinSight AI is analyzing your finances...</p>
+              <p className="text-sm font-medium italic">FinSight AI is analyzing your financial records...</p>
             </div>
           ) : response ? (
             <div className="space-y-2.5 w-full">
               <div className="flex items-center gap-2">
-                <Bot className="h-4 w-4 text-violet-600 shrink-0" />
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <div className="p-1 rounded-md bg-violet-100 text-violet-700">
+                  <Bot className="h-3.5 w-3.5 shrink-0" />
+                </div>
+                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                   {currentQuery}
                 </p>
               </div>
-              <p className="text-sm text-slate-800 leading-relaxed font-medium whitespace-pre-wrap">
+              <div className="text-sm text-slate-800 leading-relaxed font-medium whitespace-pre-wrap pl-6">
                 {response}
-              </p>
+              </div>
             </div>
           ) : (
-            <div className="flex items-center gap-3 text-slate-400 w-full">
-              <Bot className="h-5 w-5 shrink-0" />
-              <span className="text-sm">
-                Ask a question or click a preset above to get AI-powered insights from your real financial data.
+            <div className="flex items-center gap-3 text-slate-400 my-auto w-full">
+              <Bot className="h-5 w-5 shrink-0 text-slate-400" />
+              <span className="text-sm font-medium">
+                Click any preset topic above or type a custom question to generate AI financial recommendations.
               </span>
             </div>
           )}
@@ -118,19 +122,22 @@ export function AIAssistantBox({ show = true }) {
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Ask anything about your finances..."
+            placeholder="Ask anything about your income, expenses, or savings..."
             disabled={loading}
-            className="flex-1 text-sm border-slate-200 focus-visible:ring-violet-400 font-inter"
+            className="flex-1 text-sm border-slate-200 focus-visible:ring-violet-400 font-jakarta rounded-xl h-11 px-4"
           />
           <Button
             type="submit"
             disabled={loading || !query.trim()}
-            className="bg-violet-600 hover:bg-violet-700 text-white font-bold px-4 h-9 shrink-0 gap-2"
+            className="bg-violet-600 hover:bg-violet-700 text-white font-bold px-4 h-11 shrink-0 gap-2 rounded-xl shadow-md"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <Send className="h-4 w-4" />
+              <>
+                <Send className="h-4 w-4" />
+                <span className="hidden sm:inline text-xs font-semibold">Send</span>
+              </>
             )}
           </Button>
         </form>

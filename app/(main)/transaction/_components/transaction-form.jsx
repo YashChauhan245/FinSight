@@ -96,15 +96,31 @@ export function AddTransactionForm({
 
   const handleScanComplete = (scannedData) => {
     if (scannedData) {
-      setValue("amount", scannedData.amount.toString());
-      setValue("date", new Date(scannedData.date));
-      if (scannedData.description) {
-        setValue("description", scannedData.description);
+      if (scannedData.amount) {
+        setValue("amount", scannedData.amount.toString(), { shouldValidate: true });
       }
+      if (scannedData.date) {
+        setValue("date", new Date(scannedData.date), { shouldValidate: true });
+      }
+
+      const desc = scannedData.description || scannedData.merchantName || "Receipt Purchase";
+      setValue("description", desc, { shouldValidate: true });
+
       if (scannedData.category) {
-        setValue("category", scannedData.category);
+        const catLower = scannedData.category.toLowerCase();
+        const matchedCategory = categories.find(
+          (c) => c.id === catLower || c.name.toLowerCase() === catLower
+        );
+        if (matchedCategory) {
+          setValue("category", matchedCategory.id, { shouldValidate: true });
+        } else {
+          setValue("category", "other-expense", { shouldValidate: true });
+        }
       }
-      toast.success("Receipt scanned successfully");
+
+      toast.success(
+        "Receipt scanned! Review the pre-filled fields below and click 'Create Transaction' to save to your dashboard."
+      );
     }
   };
 
@@ -116,7 +132,7 @@ export function AddTransactionForm({
           : "Transaction created successfully"
       );
       reset();
-      router.push(`/account/${transactionResult.data.accountId}`);
+      router.push("/dashboard");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionResult, transactionLoading, editMode]);

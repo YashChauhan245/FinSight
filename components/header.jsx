@@ -1,14 +1,9 @@
 import React from "react";
-import { checkUser } from "@/lib/checkUser";
 import NavbarClient from "./navbar-client";
 
 const Header = async () => {
-  try {
-    await checkUser();
-  } catch (error) {
-    // Gracefully handle any auth check error during layout rendering
-  }
-
+  // checkUser() is now called only on protected pages (dashboard, account, transaction)
+  // via their own server components, not on every single route navigation.
   return <NavbarClient />;
 };
 

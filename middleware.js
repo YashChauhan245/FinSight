@@ -8,21 +8,37 @@ const isProtectedRoute = createRouteMatcher([
   "/transaction(.*)",
 ]);
 
-// Create Arcjet protection instance
-const aj = arcjet({
-  key: process.env.ARCJET_KEY,
-  rules: [
-    shield({
-      mode: "LIVE",
-    }),
-    detectBot({
-      mode: "LIVE",
-      allow: ["CATEGORY:SEARCH_ENGINE", "GO_HTTP"],
-    }),
-  ],
-});
+const aj =
+  process.env.NODE_ENV === "production" && process.env.ARCJET_KEY
+    ? arcjet({
+        key: process.env.ARCJET_KEY,
+        rules: [
+          shield({ mode: "LIVE" }),
+          detectBot({
+            mode: "LIVE",
+            allow: ["CATEGORY:SEARCH_ENGINE", "GO_HTTP"],
+          }),
+        ],
+      })
+    : null;
 
 export default clerkMiddleware(async (auth, req) => {
+  const pathname = req.nextUrl.pathname;
+
+  // Immediately skip middleware processing for public static assets & images
+  if (
+    pathname.endsWith(".png") ||
+    pathname.endsWith(".jpg") ||
+    pathname.endsWith(".jpeg") ||
+    pathname.endsWith(".svg") ||
+    pathname.endsWith(".ico") ||
+    pathname.endsWith(".webp") ||
+    pathname.endsWith(".css") ||
+    pathname.endsWith(".js")
+  ) {
+    return NextResponse.next();
+  }
+
   if (isProtectedRoute(req)) {
     const { userId } = await auth();
     if (!userId) {
@@ -32,15 +48,17 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // Redirect authenticated user from landing page (/) to /dashboard
-  if (req.nextUrl.pathname === "/") {
-    const { userId } = await auth();
-    if (userId) {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
+  if (pathname === "/") {
+    try {
+      const { userId } = await auth();
+      if (userId) {
+        return NextResponse.redirect(new URL("/dashboard", req.url));
+      }
+    } catch (e) {}
   }
 
-  // Run Arcjet security rules safely
-  if (process.env.ARCJET_KEY) {
+  // Run Arcjet security rules in production
+  if (aj) {
     try {
       const decision = await aj.protect(req);
       if (decision.isDenied()) {
@@ -50,7 +68,7 @@ export default clerkMiddleware(async (auth, req) => {
         return NextResponse.json({ error: "Access denied" }, { status: 403 });
       }
     } catch (arcjetError) {
-      console.error("Arcjet protection error in middleware:", arcjetError);
+      // Ignore Arcjet errors
     }
   }
 
@@ -59,8 +77,6 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
