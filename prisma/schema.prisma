@@ -9,11 +9,11 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  clerkUserId   String    @unique // clerk user id
-  email         String    @unique
+  id            String        @id @default(uuid())
+  email         String        @unique
   name          String?
   imageUrl      String?
+  password      String?
   transactions  Transaction[]
   accounts      Account[]
   budgets       Budget[]

@@ -1,12 +1,10 @@
 import arcjet, { detectBot, shield } from "@arcjet/next";
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
 import { NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/account(.*)",
-  "/transaction(.*)",
-]);
+const { auth } = NextAuth(authConfig);
+const protectedRoutes = ["/dashboard", "/account", "/transaction"];
 
 const aj =
   process.env.NODE_ENV === "production" && process.env.ARCJET_KEY
@@ -22,8 +20,9 @@ const aj =
       })
     : null;
 
-export default clerkMiddleware(async (auth, req) => {
+export default auth(async (req) => {
   const pathname = req.nextUrl.pathname;
+  const isLoggedIn = !!req.auth;
 
   // Immediately skip middleware processing for public static assets & images
   if (
@@ -39,22 +38,17 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  if (isProtectedRoute(req)) {
-    const { userId } = await auth();
-    if (!userId) {
-      const { redirectToSignIn } = await auth();
-      return redirectToSignIn();
-    }
+  const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
+
+  if (isProtected && !isLoggedIn) {
+    const signInUrl = new URL("/sign-in", req.url);
+    signInUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(signInUrl);
   }
 
   // Redirect authenticated user from landing page (/) to /dashboard
-  if (pathname === "/") {
-    try {
-      const { userId } = await auth();
-      if (userId) {
-        return NextResponse.redirect(new URL("/dashboard", req.url));
-      }
-    } catch (e) {}
+  if (pathname === "/" && isLoggedIn) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   // Run Arcjet security rules in production

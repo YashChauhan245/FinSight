@@ -1,17 +1,17 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { checkUser } from "@/lib/checkUser";
 import { db } from "@/lib/prisma";
 import { sendEmail } from "@/actions/send-email";
 import EmailTemplate from "@/emails/template";
 
 export async function sendBudgetAlertEmail() {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const currentUser = await checkUser();
+    if (!currentUser) throw new Error("Unauthorized");
 
     const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
+      where: { id: currentUser.id },
       include: {
         accounts: { where: { isDefault: true } },
       },

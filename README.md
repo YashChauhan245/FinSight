@@ -1,6 +1,6 @@
 # FinSight — AI-Powered Financial Intelligence Platform
 
-FinSight is a production-grade personal finance web application built with **Next.js 15 (App Router)**, **React 19**, **Tailwind CSS**, **Prisma**, **PostgreSQL**, and **Google Gemini AI**. 
+FinSight is a production-grade personal finance web application built with **Next.js 15 (App Router)**, **React 19**, **Tailwind CSS**, **Prisma**, **PostgreSQL**, **NextAuth (Auth.js v5)**, and **Google Gemini AI**. 
 
 It provides real-time cashflow analytics, automated budget burn-rate tracking, OCR receipt scanning, anomaly detection, and context-aware financial Q&A powered by generative AI. Designed with a clean, responsive fintech interface, FinSight delivers intuitive financial management for individuals, freelancers, and professionals.
 
@@ -25,12 +25,12 @@ It provides real-time cashflow analytics, automated budget burn-rate tracking, O
 
 ### Backend & Database
 - **Server Architecture**: Next.js 15 Server Actions & API Route Handlers
-- **Database**: PostgreSQL (Hosted on Neon Database)
+- **Database**: PostgreSQL (Hosted on Supabase / Neon)
 - **ORM**: Prisma ORM (v6)
-- **Authentication**: Clerk Auth (OAuth 2.0, Session Tokens, Protected Middleware)
+- **Authentication**: NextAuth (Auth.js v5) — Google OAuth 2.0, GitHub OAuth 2.0 & Email/Password Credentials (bcryptjs hashing, JWT Session Tokens)
 
 ### AI & Integrations
-- **AI Analytics**: Google Gemini API (`@google/genai`)
+- **AI Analytics**: Google Gemini API (`@google/generative-ai`)
 - **Email Delivery**: Resend API (`resend`, `@react-email/components`)
 - **Background Jobs & Triggers**: Inngest (`inngest`)
 - **Security & Bot Protection**: Arcjet (`@arcjet/next`)
@@ -39,26 +39,30 @@ It provides real-time cashflow analytics, automated budget burn-rate tracking, O
 
 ## ✨ Key Features & Capability Overview
 
-### 1. Multi-Account Cashflow Analytics
+### 1. Flexible Multi-Provider Authentication
+- Seamless sign-in via **Google** and **GitHub** OAuth.
+- Standard **Email & Password** registration with secure `bcryptjs` password hashing and automatic account initialization.
+
+### 2. Multi-Account Cashflow Analytics
 - Aggregates Checking, Savings, Credit, and Wallet balances into a single dashboard.
 - Real-time balance updates with single-click default account designation.
-- Recharts distribution of expense categories over flexible time horizons (7 Days, 1 Month, 3 Months, 6 Months, All Time).
+- Recharts distribution of expense categories over flexible time horizons.
 
-### 2. Context-Aware AI Financial Assistant
+### 3. Context-Aware AI Financial Assistant
 - Leverages Google Gemini AI to analyze 90 days of actual user transaction records.
 - Returns actionable insights on spending trends, savings opportunities, and budget health.
 - Pre-built quick query prompts for instant financial advice.
 
-### 3. Monthly Budget & Burn-Rate Management
+### 4. Monthly Budget & Burn-Rate Management
 - Custom monthly spending limits with real-time percentage consumption tracking.
 - Instant visual warnings for budgets exceeding 80% and 100% thresholds.
 - On-demand automated email alert dispatching via Resend.
 
-### 4. Smart Alerts & Anomaly Detection
-- **Month-over-Month Anomaly Engine**: Detects category spend spikes greater than 30% relative to previous month benchmarks.
-- **Recurring Commitment Reminders**: Automatically tracks daily, weekly, monthly, and yearly recurring bills with due-date countdowns.
+### 5. Smart Alerts & Anomaly Detection
+- **Month-over-Month Anomaly Engine**: Detects category spend spikes relative to previous month benchmarks.
+- **Recurring Commitment Reminders**: Automatically tracks daily, weekly, monthly, and yearly recurring bills.
 
-### 5. Receipts & Transaction Management
+### 6. Receipts & Transaction Management
 - Comprehensive transaction ledger supporting filtering by account, category, type (Income/Expense), and recurring status.
 - Receipt OCR scanning integration for automated form pre-filling.
 
@@ -68,7 +72,7 @@ It provides real-time cashflow analytics, automated budget burn-rate tracking, O
 
 FinSight uses Prisma ORM connected to PostgreSQL with relational data models:
 
-- **User**: Stores authenticated user profile and Clerk identity mapping.
+- **User**: Stores user profile, unique email, optional hashed password, and avatar image.
 - **Account**: Manages bank/wallet accounts (`CURRENT`, `SAVINGS`), initial and current balance, and default status.
 - **Transaction**: Tracks individual income and expense items linked to accounts, with category tagging, recurring frequency, and date stamps.
 - **Budget**: Maintains monthly spending limits per user with email notification state tracking.
@@ -79,8 +83,8 @@ FinSight uses Prisma ORM connected to PostgreSQL with relational data models:
 
 - **Server Actions First**: All data mutations (account creation, transaction logging, budget updates, AI querying) utilize Next.js 15 Server Actions with Zod validation.
 - **Pure Utility Styling**: Zero custom CSS rules or external styling frameworks — 100% styled using atomic Tailwind CSS utilities.
-- **Optimized Performance**: Standardized on Google `Inter` font via `next/font/google` for minimal FOIT/FOUT and zero extra network requests.
-- **Secure Middleware Execution**: Clerk middleware enforces route protection across `/dashboard`, `/account`, and `/transaction` paths before render.
+- **Edge-Compatible Auth**: NextAuth v5 configuration separated into edge-safe `auth.config.js` for middleware route protection.
+- **Secure Middleware Execution**: Auth middleware enforces route protection across `/dashboard`, `/account`, and `/transaction` paths before render.
 
 ---
 
@@ -89,7 +93,7 @@ FinSight uses Prisma ORM connected to PostgreSQL with relational data models:
 ### 1. Prerequisites
 - **Node.js**: `v18.x` or `v20.x`
 - **npm**: `v9.x` or higher
-- **PostgreSQL Database**: Connection string from Neon, Supabase, or local instance
+- **PostgreSQL Database**: Connection string from Supabase, Neon, or local instance
 
 ### 2. Installation
 ```bash
@@ -105,17 +109,24 @@ npm install
 Create a `.env` file in the root directory:
 
 ```env
-# Database
-DATABASE_URL="postgresql://user:password@ep-example.neon.tech/finsight?sslmode=require"
+# NextAuth / Auth.js Configuration
+AUTH_SECRET="your-generated-auth-secret"
+NEXTAUTH_URL="http://localhost:3000"
 
-# Clerk Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
-CLERK_SECRET_KEY="sk_test_..."
-NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
-NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
+# OAuth Credentials (GitHub)
+GITHUB_CLIENT_ID="your-github-client-id"
+GITHUB_CLIENT_SECRET="your-github-client-secret"
+
+# OAuth Credentials (Google)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# Database Connection
+DATABASE_URL="postgresql://user:password@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+DIRECT_URL="postgresql://user:password@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
 
 # Google Gemini AI
-GEMINI_API_KEY="AIzaSy..."
+GEMINI_API_KEY="AQ.Ab8..."
 
 # Resend Email Service
 RESEND_API_KEY="re_..."

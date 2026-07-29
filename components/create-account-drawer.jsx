@@ -79,8 +79,8 @@ export function CreateAccountDrawer({ children }) {
         <DrawerHeader>
           <DrawerTitle>Create New Account</DrawerTitle>
         </DrawerHeader>
-        <div className="px-4 pb-4">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div className="px-4 pb-4" suppressHydrationWarning>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" suppressHydrationWarning>
             <div className="space-y-2">
               <label
                 htmlFor="name"
