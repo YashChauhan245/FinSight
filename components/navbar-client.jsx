@@ -88,7 +88,7 @@ export default function NavbarClient() {
               width={185}
               height={52}
               priority
-              className="h-11 md:h-12 w-auto object-contain transition-transform duration-200 group-hover:opacity-90"
+              className="h-13 md:h-14 w-auto object-contain transition-transform duration-200 group-hover:opacity-90"
             />
           </Link>
         </div>
@@ -117,13 +117,13 @@ export default function NavbarClient() {
                   variant="outline"
                   className="border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium text-sm flex items-center gap-2 rounded-xl h-9 px-3.5 shadow-sm transition-all"
                 >
-                  <LayoutDashboard size={15} className="text-violet-600" />
+                  <LayoutDashboard size={15} className="text-blue-700" />
                   <span>Dashboard</span>
                 </Button>
               </Link>
 
               <Link href="/transaction/create">
-                <Button className="bg-violet-600 hover:bg-violet-700 text-white font-medium text-sm flex items-center gap-2 shadow-sm transition-all rounded-xl h-9 px-4">
+                <Button className="bg-blue-800 hover:bg-blue-900 text-white font-medium text-sm flex items-center gap-2 shadow-sm transition-all rounded-xl h-9 px-4">
                   <PenBox size={15} />
                   <span className="hidden sm:inline">Add Transaction</span>
                 </Button>
@@ -134,7 +134,7 @@ export default function NavbarClient() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
-                      className="w-9 h-9 rounded-full border border-gray-200 shadow-sm hover:border-violet-400 focus:outline-none transition-all flex items-center justify-center overflow-hidden bg-violet-100 text-violet-700 font-semibold text-xs"
+                      className="w-9 h-9 rounded-full border border-gray-200 shadow-sm hover:border-blue-400 focus:outline-none transition-all flex items-center justify-center overflow-hidden bg-blue-100 text-blue-800 font-semibold text-xs"
                       aria-label="User menu"
                     >
                       {user?.image ? (
@@ -167,7 +167,7 @@ export default function NavbarClient() {
                         href="/dashboard"
                         className="flex items-center gap-2 cursor-pointer rounded-lg px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-50"
                       >
-                        <LayoutDashboard size={15} className="text-violet-600" />
+                        <LayoutDashboard size={15} className="text-blue-700" />
                         <span>Dashboard</span>
                       </Link>
                     </DropdownMenuItem>
@@ -176,7 +176,7 @@ export default function NavbarClient() {
                         href="/transaction/create"
                         className="flex items-center gap-2 cursor-pointer rounded-lg px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-50"
                       >
-                        <PenBox size={15} className="text-violet-600" />
+                        <PenBox size={15} className="text-blue-700" />
                         <span>Add Transaction</span>
                       </Link>
                     </DropdownMenuItem>
@@ -204,7 +204,7 @@ export default function NavbarClient() {
               </Link>
 
               <Link href="/sign-in">
-                <Button className="bg-violet-600 hover:bg-violet-700 text-white shadow-sm font-medium text-sm rounded-xl h-9 px-4 transition-all">
+                <Button className="bg-blue-800 hover:bg-blue-900 text-white shadow-sm font-medium text-sm rounded-xl h-9 px-4 transition-all">
                   <span>Get Started</span>
                 </Button>
               </Link>
@@ -246,11 +246,11 @@ export default function NavbarClient() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
                   pathname === "/dashboard"
-                    ? "bg-violet-50 text-violet-700 font-semibold"
+                    ? "bg-blue-50 text-blue-700 font-semibold"
                     : "text-gray-700 hover:bg-gray-50"
                 }`}
               >
-                <LayoutDashboard size={17} className="text-violet-600" />
+                <LayoutDashboard size={17} className="text-blue-700" />
                 <span>Dashboard</span>
               </Link>
 
@@ -259,11 +259,11 @@ export default function NavbarClient() {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
                   pathname === "/transaction/create"
-                    ? "bg-violet-50 text-violet-700 font-semibold"
+                    ? "bg-blue-50 text-blue-700 font-semibold"
                     : "text-gray-700 hover:bg-gray-50"
                 }`}
               >
-                <PenBox size={17} className="text-violet-600" />
+                <PenBox size={17} className="text-blue-700" />
                 <span>Add Transaction</span>
               </Link>
 
@@ -282,7 +282,7 @@ export default function NavbarClient() {
 
           <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 px-3">
             <span className="flex items-center gap-1.5 font-medium">
-              <Sparkles size={14} className="text-violet-500" />
+              <Sparkles size={14} className="text-blue-600" />
               FinSight AI Personal Finance
             </span>
           </div>

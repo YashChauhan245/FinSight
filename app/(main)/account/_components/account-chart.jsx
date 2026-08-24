@@ -142,7 +142,7 @@ export function AccountChart({ transactions }) {
           <div
             className={`${
               net >= 0
-                ? "bg-violet-50 border-violet-100"
+                ? "bg-blue-50 border-blue-100"
                 : "bg-gray-50 border-gray-200"
             } border rounded-xl p-3 text-left`}
           >
@@ -152,7 +152,7 @@ export function AccountChart({ transactions }) {
             </div>
             <p
               className={`text-base font-bold tabular-nums ${
-                net >= 0 ? "text-violet-700" : "text-gray-700"
+                net >= 0 ? "text-blue-800" : "text-gray-700"
               }`}
             >
               {net < 0 ? "-" : "+"} ₹

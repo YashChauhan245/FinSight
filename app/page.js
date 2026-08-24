@@ -17,7 +17,7 @@ import {
 // ─── Features ───────────────────────────────────────────────
 const features = [
   {
-    icon: <Wallet className="h-5 w-5 text-violet-600" />,
+    icon: <Wallet className="h-5 w-5 text-blue-700" />,
     title: "Expense Tracking",
     description: "Add transactions manually or scan receipts. See where every rupee goes.",
   },
@@ -65,7 +65,7 @@ const pricingTiers = [
     cta: "Get Started Free",
     ctaHref: "/dashboard",
     ctaStyle:
-      "bg-violet-600 hover:bg-violet-700 text-white shadow-sm font-medium",
+      "bg-blue-800 hover:bg-blue-900 text-white shadow-sm font-medium",
     highlight: true,
   },
   {
@@ -133,7 +133,12 @@ const LandingPage = () => {
 
       {/* ── Features ── */}
       <section id="features" className="py-16 md:py-20 px-4 max-w-7xl mx-auto">
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+        <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-blue-700 mb-1">
+            <span className="w-4 h-px bg-blue-700 rounded-full" />
+            Built for real users
+            <span className="w-4 h-px bg-blue-700 rounded-full" />
+          </div>
           <h2 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-900 font-inter">
             Features That Actually Help
           </h2>
@@ -147,13 +152,15 @@ const LandingPage = () => {
           {features.map((f, i) => (
             <div
               key={i}
-              className="rounded-xl border border-gray-200 bg-white p-6 flex flex-col gap-3.5 text-left shadow-sm hover:border-gray-300 transition-all duration-200"
+              className="group rounded-xl border border-gray-200 bg-white p-6 flex flex-col gap-4 text-left shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-blue-100 transition-all duration-200"
             >
-              <div className="w-9 h-9 rounded-lg bg-gray-50 border border-gray-200/80 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100/60 border border-blue-100/80 flex items-center justify-center group-hover:from-blue-100 group-hover:to-blue-50 transition-colors">
                 {f.icon}
               </div>
-              <h3 className="text-base font-bold text-gray-900 font-inter">{f.title}</h3>
-              <p className="text-xs text-gray-600 leading-relaxed font-medium">{f.description}</p>
+              <div>
+                <h3 className="text-sm font-bold text-gray-900 font-inter mb-1">{f.title}</h3>
+                <p className="text-xs text-gray-500 leading-relaxed font-medium">{f.description}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -199,10 +206,10 @@ const LandingPage = () => {
             </span>
 
             {[
-              { cat: "Dining Out", spent: 3600, total: 5000, color: "bg-amber-500" },
-              { cat: "Subscriptions", spent: 1150, total: 2000, color: "bg-violet-500" },
-              { cat: "Groceries", spent: 4200, total: 6000, color: "bg-emerald-500" },
-              { cat: "Transport", spent: 900, total: 1500, color: "bg-blue-500" },
+              { cat: "Dining Out", spent: 3600, total: 5000, color: "from-amber-400 to-amber-500" },
+              { cat: "Subscriptions", spent: 1150, total: 2000, color: "from-blue-500 to-blue-700" },
+              { cat: "Groceries", spent: 4200, total: 6000, color: "from-emerald-400 to-emerald-500" },
+              { cat: "Transport", spent: 900, total: 1500, color: "from-blue-400 to-blue-500" },
             ].map((b) => {
               const pct = Math.round((b.spent / b.total) * 100);
               return (
@@ -215,7 +222,7 @@ const LandingPage = () => {
                   </div>
                   <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden border border-gray-200/50">
                     <div
-                      className={`${b.color} h-full rounded-full transition-all duration-500`}
+                      className={`bg-gradient-to-r ${b.color} h-full rounded-full transition-all duration-500`}
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -225,15 +232,15 @@ const LandingPage = () => {
             })}
 
             {/* Savings Milestone */}
-            <div className="mt-2 rounded-xl border border-violet-100 bg-violet-50/60 p-3.5 space-y-2">
+            <div className="mt-2 rounded-xl border border-blue-100 bg-blue-50/60 p-3.5 space-y-2">
               <div className="flex justify-between text-xs font-bold text-gray-900">
                 <span>🎯 MacBook Pro Goal</span>
-                <span className="text-violet-700 tabular-nums">₹68,000 / ₹1,40,000</span>
+                <span className="text-blue-800 tabular-nums">₹68,000 / ₹1,40,000</span>
               </div>
-              <div className="w-full bg-white rounded-full h-2 border border-violet-100 overflow-hidden">
-                <div className="bg-violet-600 h-full rounded-full" style={{ width: "48%" }} />
+              <div className="w-full bg-white rounded-full h-2 border border-blue-100 overflow-hidden">
+                <div className="bg-blue-700 h-full rounded-full" style={{ width: "48%" }} />
               </div>
-              <p className="text-[10px] text-violet-600 font-semibold">48% — on track ✓</p>
+              <p className="text-[10px] text-blue-700 font-semibold">48% — on track ✓</p>
             </div>
           </div>
         </div>
@@ -249,19 +256,23 @@ const LandingPage = () => {
 
         <div className="grid gap-5 md:grid-cols-3 text-left">
           {[
-            { step: "01", color: "bg-violet-50 text-violet-700 border-violet-100", title: "Add transactions", body: "Manual entry or snap a receipt photo — FinSight auto-fills the category and amount." },
-            { step: "02", color: "bg-blue-50 text-blue-700 border-blue-100", title: "Get AI insights", body: "Ask Gemini natural language questions. Get answers grounded in your real data." },
-            { step: "03", color: "bg-emerald-50 text-emerald-700 border-emerald-100", title: "Improve spending", body: "Act on budget nudges, recurring alerts, and month-over-month anomaly reports." },
+            { step: "01", color: "bg-blue-50 text-blue-700 border-blue-100", dot: "bg-blue-600", title: "Add transactions", body: "Manual entry or snap a receipt photo — FinSight auto-fills the category and amount." },
+            { step: "02", color: "bg-blue-50 text-blue-700 border-blue-100", dot: "bg-blue-600", title: "Get AI insights", body: "Ask Gemini natural language questions. Get answers grounded in your real data." },
+            { step: "03", color: "bg-emerald-50 text-emerald-700 border-emerald-100", dot: "bg-emerald-600", title: "Improve spending", body: "Act on budget nudges, recurring alerts, and month-over-month anomaly reports." },
           ].map((s) => (
             <div
               key={s.step}
-              className="bg-white border border-gray-200 p-6 rounded-xl space-y-3.5 shadow-sm hover:border-gray-300 transition-all duration-200"
+              className="group bg-white border border-gray-200 p-6 rounded-2xl space-y-3.5 shadow-sm hover:shadow-md hover:-translate-y-1 hover:border-blue-100 transition-all duration-200"
             >
-              <div className={`inline-flex items-center px-2.5 py-0.5 rounded-md border ${s.color} text-[11px] font-bold tracking-wider`}>
-                STEP {s.step}
+              <div className="flex items-center gap-2.5">
+                <div className={`w-7 h-7 rounded-lg border flex items-center justify-center text-[11px] font-extrabold tracking-wider ${s.color}`}>
+                  {s.step}
+                </div>
+                <div className={`h-px flex-1 ${s.dot === 'bg-emerald-600' ? 'bg-emerald-100' : 'bg-blue-100'}`} />
+                <div className={`w-2 h-2 rounded-full ${s.dot}`} />
               </div>
               <h3 className="text-base font-bold text-gray-900 font-inter">{s.title}</h3>
-              <p className="text-xs text-gray-600 leading-relaxed font-medium">{s.body}</p>
+              <p className="text-xs text-gray-500 leading-relaxed font-medium">{s.body}</p>
             </div>
           ))}
         </div>
@@ -311,7 +322,7 @@ const LandingPage = () => {
               key={tier.name}
               className={`rounded-xl border p-7 space-y-5 flex flex-col ${
                 tier.highlight
-                  ? "border-violet-200 bg-white shadow-sm ring-1 ring-violet-200"
+                  ? "border-blue-200 bg-white shadow-sm ring-1 ring-blue-200"
                   : "border-gray-200 bg-gray-50/50 shadow-sm"
               }`}
             >
@@ -365,10 +376,10 @@ const LandingPage = () => {
             </p>
           </div>
           <div className="rounded-xl border border-gray-200 bg-gray-50 p-7 flex flex-col justify-center gap-3 shadow-sm">
-            <div className="text-3xl font-extrabold text-violet-700 tabular-nums">₹2.4Cr+</div>
+            <div className="text-3xl font-extrabold text-blue-800 tabular-nums">₹2.4Cr+</div>
             <p className="text-xs font-semibold text-gray-700">in transactions tracked</p>
             <div className="h-px bg-gray-200 my-0.5" />
-            <div className="text-2xl font-extrabold text-violet-700 tabular-nums">12,000+</div>
+            <div className="text-2xl font-extrabold text-blue-800 tabular-nums">12,000+</div>
             <p className="text-xs font-semibold text-gray-700">AI insights generated</p>
           </div>
         </div>
@@ -404,18 +415,18 @@ const LandingPage = () => {
 
       {/* ── CTA ── */}
       <section className="py-16 md:py-20 px-4 max-w-4xl mx-auto">
-        <div className="rounded-2xl bg-violet-600 p-8 md:p-12 text-center space-y-5 shadow-sm text-white relative overflow-hidden">
+        <div className="rounded-2xl bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 p-8 md:p-12 text-center space-y-5 shadow-lg text-white relative overflow-hidden">
           <h2 className="text-2xl md:text-3xl font-extrabold text-white font-inter">
             Start managing your money today
           </h2>
-          <p className="text-violet-100 text-xs md:text-sm max-w-xl mx-auto font-medium">
+          <p className="text-blue-200 text-xs md:text-sm max-w-xl mx-auto font-medium">
             Free forever. No credit card required. Real AI insights in under 2 minutes.
           </p>
           <div className="pt-1">
             <Link href="/dashboard">
               <Button
                 size="lg"
-                className="bg-white text-violet-700 hover:bg-gray-50 font-bold px-8 py-3 rounded-xl shadow-sm text-sm transition-all"
+                className="bg-white text-blue-900 hover:bg-blue-50 font-bold px-8 py-3 rounded-xl shadow-sm text-sm transition-all"
               >
                 Get Started — It&apos;s Free
               </Button>

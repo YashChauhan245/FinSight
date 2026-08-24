@@ -104,7 +104,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
                 type="number"
                 value={newBudget}
                 onChange={(e) => setNewBudget(e.target.value)}
-                className="w-40 text-xs h-8 border-gray-200 focus-visible:ring-violet-500 font-medium rounded-lg"
+                className="w-40 text-xs h-8 border-gray-200 focus-visible:ring-blue-500 font-medium rounded-lg"
                 placeholder="Enter budget limit"
                 autoFocus
                 disabled={isLoading}
@@ -114,7 +114,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
                 size="sm"
                 onClick={handleUpdateBudget}
                 disabled={isLoading}
-                className="h-8 px-3 text-white bg-violet-600 hover:bg-violet-700 border-none font-medium text-xs rounded-lg shadow-sm"
+                className="h-8 px-3 text-white bg-blue-800 hover:bg-blue-900 border-none font-medium text-xs rounded-lg shadow-sm"
               >
                 {isLoading ? (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -145,7 +145,7 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsEditing(true)}
-                className="h-6 w-6 text-gray-400 hover:text-violet-600 hover:bg-violet-50 transition-colors rounded-md"
+                className="h-6 w-6 text-gray-400 hover:text-blue-700 hover:bg-blue-50 transition-colors rounded-md"
                 title="Edit Budget"
               >
                 <Pencil className="h-3 w-3" />
@@ -164,9 +164,9 @@ export function BudgetProgress({ initialBudget, currentExpenses }) {
             className="shrink-0 text-xs h-9 border-gray-200 text-gray-700 bg-white hover:bg-gray-50 gap-2 rounded-lg font-medium px-3.5 shadow-sm transition-all"
           >
             {sendingEmail ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin text-violet-600" />
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-700" />
             ) : (
-              <Mail className="h-3.5 w-3.5 text-violet-600" />
+              <Mail className="h-3.5 w-3.5 text-blue-700" />
             )}
             {sendingEmail ? "Sending Alert..." : "Send Alert Email"}
           </Button>

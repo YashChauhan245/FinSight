@@ -73,7 +73,7 @@ export function AIAssistantBox({ show = true }) {
               suppressHydrationWarning
               onClick={() => handleSend(preset.query)}
               disabled={loading}
-              className="text-xs bg-gray-50 hover:bg-violet-50 hover:text-violet-700 hover:border-violet-200 text-gray-700 font-medium px-3 py-1.5 rounded-lg border border-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-xs bg-gray-50 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 text-gray-700 font-medium px-3 py-1.5 rounded-lg border border-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {preset.label}
             </button>
@@ -84,13 +84,13 @@ export function AIAssistantBox({ show = true }) {
         <div className="rounded-xl bg-gray-50 border border-gray-200/80 min-h-[95px] p-4 flex items-start text-left">
           {loading ? (
             <div className="flex items-center gap-3 text-gray-600 my-auto">
-              <Loader2 className="h-4 w-4 animate-spin shrink-0 text-violet-600" />
+              <Loader2 className="h-4 w-4 animate-spin shrink-0 text-blue-700" />
               <p className="text-xs font-medium text-gray-600">FinSight AI is analyzing your financial records...</p>
             </div>
           ) : response ? (
             <div className="space-y-2 w-full">
               <div className="flex items-center gap-2">
-                <div className="p-1 rounded-md bg-violet-100 text-violet-700">
+                <div className="p-1 rounded-md bg-blue-100 text-blue-700">
                   <Bot className="h-3.5 w-3.5 shrink-0" />
                 </div>
                 <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
@@ -124,12 +124,12 @@ export function AIAssistantBox({ show = true }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Ask anything about your income, expenses, or savings..."
             disabled={loading}
-            className="flex-1 text-xs border-gray-200 focus-visible:ring-violet-500 font-inter rounded-xl h-10 px-3.5"
+            className="flex-1 text-xs border-gray-200 focus-visible:ring-blue-500 font-inter rounded-xl h-10 px-3.5"
           />
           <Button
             type="submit"
             disabled={loading || !query.trim()}
-            className="bg-violet-600 hover:bg-violet-700 text-white font-medium px-4 h-10 shrink-0 gap-2 rounded-xl shadow-sm transition-all text-xs"
+            className="bg-blue-800 hover:bg-blue-900 text-white font-medium px-4 h-10 shrink-0 gap-2 rounded-xl shadow-sm transition-all text-xs"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

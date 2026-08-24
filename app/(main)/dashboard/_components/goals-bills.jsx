@@ -21,7 +21,7 @@ export function GoalsAndBills({ showGoals = true, showBills = true }) {
   // Sample savings goals to display progress bars cleanly
   const goals = [
     { id: 1, title: "Emergency Fund", current: 85000, target: 100000, color: "bg-emerald-500" },
-    { id: 2, title: "Vacation Trip", current: 32000, target: 50000, color: "bg-violet-500" },
+    { id: 2, title: "Vacation Trip", current: 32000, target: 50000, color: "bg-blue-600" },
     { id: 3, title: "Tech Upgrade", current: 45000, target: 60000, color: "bg-indigo-500" },
   ];
 
@@ -89,7 +89,7 @@ export function GoalsAndBills({ showGoals = true, showBills = true }) {
         <Card className="border border-gray-200 bg-white shadow-sm hover:border-gray-300 transition-all rounded-xl font-inter flex flex-col justify-between">
           <CardHeader className="pb-3 p-5 sm:p-6 text-left">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-violet-50 text-violet-700">
+              <div className="p-1.5 rounded-lg bg-blue-50 text-blue-700">
                 <Target className="h-4 w-4" />
               </div>
               <div>
@@ -129,7 +129,7 @@ export function GoalsAndBills({ showGoals = true, showBills = true }) {
         <Card className="border border-gray-200 bg-white shadow-sm hover:border-gray-300 transition-all rounded-xl font-inter">
           <CardHeader className="pb-3 p-5 sm:p-6 text-left">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-violet-50 text-violet-700">
+              <div className="p-1.5 rounded-lg bg-blue-50 text-blue-700">
                 <CalendarIcon className="h-4 w-4" />
               </div>
               <div>
@@ -205,13 +205,13 @@ export function GoalsAndBills({ showGoals = true, showBills = true }) {
                         onClick={() => setSelectedDate(day)}
                         className={`h-7 w-7 mx-auto rounded-lg flex items-center justify-center transition-all ${
                           isSelected
-                            ? "bg-violet-600 text-white font-bold shadow-sm"
+                            ? "bg-blue-700 text-white font-bold shadow-sm"
                             : "hover:bg-gray-100 text-gray-700"
                         } relative font-medium`}
                       >
                         {day.getDate()}
                         {hasBill && !isSelected && (
-                          <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-violet-600" />
+                          <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-700" />
                         )}
                       </button>
                     );
@@ -253,14 +253,14 @@ export function GoalsAndBills({ showGoals = true, showBills = true }) {
                 placeholder="Bill title"
                 value={billTitle}
                 onChange={(e) => setBillTitle(e.target.value)}
-                className="text-xs h-9 border-gray-200 rounded-lg focus-visible:ring-violet-500 font-medium"
+                className="text-xs h-9 border-gray-200 rounded-lg focus-visible:ring-blue-500 font-medium"
               />
               <Input
                 placeholder="Amount"
                 type="number"
                 value={billAmount}
                 onChange={(e) => setBillAmount(e.target.value)}
-                className="text-xs h-9 border-gray-200 rounded-lg focus-visible:ring-violet-500 font-medium"
+                className="text-xs h-9 border-gray-200 rounded-lg focus-visible:ring-blue-500 font-medium"
               />
               <Input
                 type="date"
@@ -268,7 +268,7 @@ export function GoalsAndBills({ showGoals = true, showBills = true }) {
                 onChange={(e) => setBillDate(e.target.value)}
                 className="text-xs h-9 border-gray-200 rounded-lg text-gray-700 font-medium"
               />
-              <Button type="submit" className="bg-violet-600 hover:bg-violet-700 text-white font-medium h-9 text-xs rounded-lg shadow-sm">
+              <Button type="submit" className="bg-blue-800 hover:bg-blue-900 text-white font-medium h-9 text-xs rounded-lg shadow-sm">
                 <Plus className="h-3.5 w-3.5 mr-1" />
                 Add Bill
               </Button>

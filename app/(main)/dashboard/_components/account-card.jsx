@@ -66,14 +66,14 @@ export function AccountCard({ account }) {
     <Card
       className={`hover:border-gray-300 transition-all duration-200 border bg-white rounded-xl shadow-sm group relative overflow-hidden font-inter ${
         isDefault
-          ? "border-violet-300 ring-1 ring-violet-200"
+          ? "border-blue-300 ring-1 ring-blue-200"
           : "border-gray-200"
       }`}
     >
       <Link href={`/account/${id}`}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 p-5 pb-3">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-gray-100 border border-gray-200/80 text-gray-700 group-hover:bg-violet-600 group-hover:text-white group-hover:border-violet-600 transition-all duration-200 shadow-sm">
+            <div className="p-2.5 rounded-lg bg-gray-100 border border-gray-200/80 text-gray-700 group-hover:bg-blue-800 group-hover:text-white group-hover:border-blue-800 transition-all duration-200 shadow-sm">
               <AccountIcon className="h-4 w-4" />
             </div>
             <div className="text-left">
@@ -93,7 +93,7 @@ export function AccountCard({ account }) {
             {isDefault && (
               <Badge
                 variant="outline"
-                className="text-[10px] bg-violet-50 text-violet-700 border-violet-200 font-semibold px-2 py-0.5 rounded-md"
+                className="text-[10px] bg-blue-50 text-blue-700 border-blue-200 font-semibold px-2 py-0.5 rounded-md"
               >
                 Default
               </Badge>
@@ -102,7 +102,7 @@ export function AccountCard({ account }) {
               checked={isDefault}
               onClick={handleDefaultChange}
               disabled={updateDefaultLoading}
-              className="data-[state=checked]:bg-violet-600 scale-90"
+              className="data-[state=checked]:bg-blue-800 scale-90"
             />
           </div>
         </CardHeader>

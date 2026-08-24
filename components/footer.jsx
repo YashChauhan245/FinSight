@@ -73,7 +73,7 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-gray-500 hover:text-violet-600 transition-colors"
+                    className="text-gray-500 hover:text-blue-700 transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -98,7 +98,7 @@ export default function Footer() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className="text-gray-500 hover:text-violet-600 transition-colors"
+                    className="text-gray-500 hover:text-blue-700 transition-colors"
                   >
                     {item.name}
                   </Link>
@@ -115,7 +115,7 @@ export default function Footer() {
             </h3>
             <div className="space-y-2 bg-gray-50 rounded-xl p-3.5 border border-gray-200/80 shadow-sm">
               <div className="flex items-center gap-2 text-xs text-gray-700 font-medium">
-                <Lock className="w-3.5 h-3.5 text-violet-600 shrink-0" />
+                <Lock className="w-3.5 h-3.5 text-blue-700 shrink-0" />
                 <span>256-bit AES Encryption</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-700 font-medium">
@@ -153,7 +153,7 @@ export default function Footer() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 hover:text-violet-600 hover:border-gray-300 transition-colors shadow-sm"
+                className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 hover:text-blue-700 hover:border-gray-300 transition-colors shadow-sm"
                 aria-label="Twitter"
               >
                 <Twitter className="w-3.5 h-3.5" />
@@ -162,14 +162,14 @@ export default function Footer() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noreferrer"
-                className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 hover:text-violet-600 hover:border-gray-300 transition-colors shadow-sm"
+                className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 hover:text-blue-700 hover:border-gray-300 transition-colors shadow-sm"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="w-3.5 h-3.5" />
               </a>
               <a
                 href="mailto:support@finsight.ai"
-                className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 hover:text-violet-600 hover:border-gray-300 transition-colors shadow-sm"
+                className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center text-gray-500 hover:text-blue-700 hover:border-gray-300 transition-colors shadow-sm"
                 aria-label="Email Support"
               >
                 <Mail className="w-3.5 h-3.5" />

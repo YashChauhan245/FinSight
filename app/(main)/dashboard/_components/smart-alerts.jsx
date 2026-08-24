@@ -115,7 +115,7 @@ export function SmartAlertsWidget({ show = true, transactions = [] }) {
           {/* ── Recurring Reminders ── */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs font-bold text-gray-800 uppercase tracking-wider">
-              <RefreshCw className="h-3.5 w-3.5 text-violet-600" />
+              <RefreshCw className="h-3.5 w-3.5 text-blue-700" />
               Recurring Reminders
             </div>
             {recurringTransactions.length === 0 ? (

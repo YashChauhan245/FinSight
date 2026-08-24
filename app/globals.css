@@ -10,7 +10,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 245 58% 51%;
+    --primary: 217 71% 33%;
     --primary-foreground: 210 40% 98%;
     --secondary: 220 14% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -22,14 +22,14 @@
     --destructive-foreground: 210 40% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 245 58% 51%;
+    --ring: 217 71% 33%;
     --radius: 0.75rem;
   }
 }
 
 ::selection {
-  background-color: #eef2ff;
-  color: #4338ca;
+  background-color: #dbeafe;
+  color: #1e3a8a;
 }
 
 body {
@@ -52,4 +52,50 @@ html {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ── Fade-in animation ── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.55s ease-out both;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+/* ── Gradient border utility ── */
+.gradient-border {
+  position: relative;
+  background: white;
+  border-radius: 1rem;
+}
+
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #1e40af22, #60a5fa33, #1e40af11);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
