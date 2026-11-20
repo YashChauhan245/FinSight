@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { Plus, Wallet } from "lucide-react";
+import { format, getDaysInMonth, isSameMonth } from "date-fns";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { CreateAccountDrawer } from "@/components/create-account-drawer";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plus, Wallet, LayoutGrid } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AccountCard } from "./account-card";
 import { BudgetProgress } from "./budget-progress";
 import { DashboardOverview } from "./transaction-overview";
@@ -12,14 +15,21 @@ import { GoalsAndBills } from "./goals-bills";
 import { SmartAlertsWidget } from "./smart-alerts";
 import { AIAssistantBox } from "./ai-assistant";
 
-const WIDGETS = [
-  { key: "goals", label: "Goals" },
-  { key: "bills", label: "Bills" },
-  { key: "alerts", label: "Alerts" },
-  { key: "ai", label: "AI Assistant" },
+const widgets = [
+  { key: "goals", label: "Savings goals" },
+  { key: "bills", label: "Bill calendar" },
+  { key: "alerts", label: "Smart alerts" },
+  { key: "ai", label: "Finance assistant" },
 ];
 
-export function DashboardClient({ accounts, transactions, budgetData }) {
+const currency = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 0,
+});
+
+export function DashboardClient({ accounts, transactions = [], budgetData }) {
   const [visibleWidgets, setVisibleWidgets] = useState({
     goals: true,
     bills: true,
@@ -27,143 +37,155 @@ export function DashboardClient({ accounts, transactions, budgetData }) {
     ai: true,
   });
 
-  const toggleWidget = (key) =>
-    setVisibleWidgets((prev) => ({ ...prev, [key]: !prev[key] }));
+  const month = new Date();
+  const monthLabel = format(month, "MMMM yyyy");
+  const weeks = ["1–7", "8–14", "15–21", `22–${getDaysInMonth(month)}`].map((week) => ({
+    week, income: 0, spending: 0,
+  }));
+
+  for (const transaction of transactions) {
+    const date = new Date(transaction.date);
+    if (!isSameMonth(date, month) || date > month) continue;
+    const index = Math.min(Math.floor((date.getDate() - 1) / 7), weeks.length - 1);
+    const amount = Number(transaction.amount) || 0;
+    if (transaction.type === "INCOME") weeks[index].income += amount;
+    if (transaction.type === "EXPENSE") weeks[index].spending += amount;
+  }
+
+  const balance = accounts.reduce((total, account) => total + (Number(account.balance) || 0), 0);
+  const income = weeks.reduce((total, week) => total + week.income, 0);
+  const spending = weeks.reduce((total, week) => total + week.spending, 0);
 
   return (
-    <div className="px-4 sm:px-6 pt-2 pb-12 max-w-7xl mx-auto space-y-6 min-h-screen font-inter">
-      {/* ── 1. Dashboard Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-        <div className="space-y-1.5 text-left">
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 font-inter">
-            Financial Dashboard
-          </h1>
-          <p className="text-xs sm:text-sm text-gray-500 font-medium">
-            Monitor cashflow, track monthly budgets, and review automated AI insights.
-          </p>
+    <div className="space-y-5">
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-4xl font-normal tracking-tight sm:text-5xl">Overview</h1>
+          <p className="mt-2 text-sm text-muted-foreground sm:text-base">Balances, cash flow, and budget at a glance.</p>
         </div>
-
-        <CreateAccountDrawer>
-          <Button className="bg-blue-800 hover:bg-blue-900 text-white font-medium text-sm gap-2 shadow-sm transition-all rounded-xl h-10 px-4 shrink-0">
-            <Plus className="h-4 w-4" />
-            <span>Add Account</span>
-          </Button>
-        </CreateAccountDrawer>
-      </div>
-
-      {/* ── 2. Budget Progress ── */}
-      <BudgetProgress
-        initialBudget={budgetData?.budget}
-        currentExpenses={budgetData?.currentExpenses || 0}
-      />
-
-      {/* ── 3 & 4. Dashboard Overview (Expense Breakdown + Recent Transactions) ── */}
-      <DashboardOverview
-        accounts={accounts}
-        transactions={transactions || []}
-      />
-
-      {/* ── 5. Connected Accounts ── */}
-      <div className="space-y-3.5 text-left">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <h2 className="text-lg font-bold tracking-tight text-gray-900 font-inter">
-              Connected Accounts
-            </h2>
-            <span className="text-xs font-semibold text-gray-600 bg-gray-100 border border-gray-200 px-2.5 py-0.5 rounded-full tabular-nums">
-              {accounts.length} Active
-            </span>
-          </div>
+        <div className="flex flex-wrap gap-2">
+          <CreateAccountDrawer><Button variant="outline">Add account</Button></CreateAccountDrawer>
+          <Button asChild><Link href="/transaction/create"><Plus /> Add transaction</Link></Button>
         </div>
+      </header>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <CreateAccountDrawer>
-            <Card className="hover:border-blue-300 hover:bg-blue-50/10 transition-all duration-200 cursor-pointer border-dashed border-2 border-gray-200 bg-white min-h-[135px] flex items-center justify-center group rounded-xl shadow-sm">
-              <CardContent className="flex flex-col items-center justify-center text-gray-400 group-hover:text-blue-700 transition-colors py-6">
-                <div className="p-2.5 rounded-lg bg-gray-100 group-hover:bg-blue-100 mb-2 transition-colors">
-                  <Plus className="h-4 w-4" />
-                </div>
-                <p className="text-sm font-semibold text-gray-800 font-inter group-hover:text-blue-800">Add New Account</p>
-                <p className="text-xs text-gray-400 font-medium mt-0.5">
-                  Checking, Savings or Credit Card
-                </p>
-              </CardContent>
-            </Card>
-          </CreateAccountDrawer>
-
-          {accounts.length > 0 &&
-            accounts.map((account) => (
-              <AccountCard key={account.id} account={account} />
-            ))}
+      <dl className="grid grid-cols-2 gap-y-4 rounded-lg bg-ledger p-5 text-ledger-foreground sm:grid-cols-3 sm:p-6">
+        <div className="col-span-2 border-b border-ledger-muted/30 pb-3 sm:col-span-1 sm:border-b-0 sm:pb-0 sm:pr-4">
+          <dt className="text-sm text-ledger-muted">Total balance</dt>
+          <dd className="mt-1 font-serif text-[clamp(1.9rem,4vw,3rem)] leading-tight tracking-tight tabular-nums">{currency.format(balance)}</dd>
+          <dd className="mt-1 text-xs text-ledger-muted">Across {accounts.length} {accounts.length === 1 ? "account" : "accounts"}</dd>
         </div>
+        <div className="pr-2 sm:border-l sm:border-ledger-muted/30 sm:px-5">
+          <dt className="text-sm text-ledger-muted">Income</dt>
+          <dd className="mt-1 break-words text-lg font-medium tracking-tight tabular-nums sm:text-2xl">{currency.format(income)}</dd>
+          <dd className="mt-1 text-xs text-ledger-muted">{monthLabel}</dd>
+        </div>
+        <div className="border-l border-ledger-muted/30 pl-3 sm:pl-5">
+          <dt className="text-sm text-ledger-muted">Spending</dt>
+          <dd className="mt-1 break-words text-lg font-medium tracking-tight tabular-nums sm:text-2xl">{currency.format(spending)}</dd>
+          <dd className="mt-1 text-xs text-ledger-muted">{monthLabel}</dd>
+        </div>
+      </dl>
 
-        {/* Onboarding Welcome Banner */}
-        {accounts.length === 0 && (
-          <div className="mt-2 p-6 md:p-7 bg-gray-50 border border-gray-200 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-            <div className="space-y-1.5 text-left">
-              <div className="flex items-center gap-2 text-blue-800 font-semibold text-xs uppercase tracking-wider">
-                <Wallet className="h-4 w-4" />
-                <span>Get Started with FinSight</span>
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 font-inter">
-                Connect Your First Account
-              </h3>
-              <p className="text-sm text-gray-600 max-w-xl leading-relaxed">
-                Add a checking, savings, or wallet account to view AI cashflow analytics, category budget tracking, and automated bill alerts.
-              </p>
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
+        <Card>
+          <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3 space-y-0 pb-3">
+            <div>
+              <CardTitle>Cash flow</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">{monthLabel}</p>
             </div>
-            <CreateAccountDrawer>
-              <Button
-                size="lg"
-                className="bg-blue-800 hover:bg-blue-900 text-white font-medium px-5 py-2.5 rounded-xl shadow-sm transition-all shrink-0"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add Account Now
-              </Button>
-            </CreateAccountDrawer>
-          </div>
-        )}
+            <div className="flex gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5"><span className="size-2 rounded-sm bg-chart-1" />Income</span>
+              <span className="flex items-center gap-1.5"><span className="size-2 rounded-sm bg-chart-2" />Spending</span>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {income || spending ? (
+              <div className="h-48 min-w-0" role="img" aria-label={`Income and spending by week of ${monthLabel}`}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={weeks} margin={{ top: 7, right: 6, bottom: 0, left: 0 }}>
+                    <CartesianGrid vertical={false} stroke="hsl(var(--border))" />
+                    <XAxis dataKey="week" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                    <YAxis width={54} tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(value) => value >= 1000 ? `₹${value / 1000}k` : `₹${value}`} />
+                    <Tooltip
+                      formatter={(value) => currency.format(value)}
+                      contentStyle={{ background: "hsl(var(--card))", borderColor: "hsl(var(--border))", color: "hsl(var(--foreground))", borderRadius: 8 }}
+                      itemStyle={{ color: "hsl(var(--foreground))" }}
+                      cursor={{ fill: "hsl(var(--muted))" }}
+                    />
+                    <Bar name="Income" dataKey="income" fill="hsl(var(--chart-1))" maxBarSize={22} radius={[3, 3, 0, 0]} />
+                    <Bar name="Spending" dataKey="spending" fill="hsl(var(--chart-2))" maxBarSize={22} radius={[3, 3, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <p className="grid min-h-48 place-items-center rounded-md bg-muted px-4 text-center text-sm text-muted-foreground">No cash flow recorded for this month yet.</p>
+            )}
+          </CardContent>
+        </Card>
+        <div id="budget" className="min-w-0 scroll-mt-32 lg:scroll-mt-20">
+          <BudgetProgress
+            initialBudget={budgetData?.budget}
+            currentExpenses={budgetData?.currentExpenses || 0}
+          />
+        </div>
       </div>
 
-      {/* ── Widget Visibility Controls ── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white border border-gray-200 rounded-xl shadow-sm">
-        <div className="flex items-center gap-2 text-xs font-semibold text-gray-700 px-1">
-          <LayoutGrid className="h-4 w-4 text-blue-700" />
-          <span>Dashboard View Toggles:</span>
+      <DashboardOverview accounts={accounts} transactions={transactions} />
+
+      <section id="accounts" className="space-y-3 scroll-mt-32 lg:scroll-mt-20">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-semibold tracking-tight">Accounts</h2>
+          {accounts.length > 0 && <CreateAccountDrawer><Button variant="outline" size="sm"><Plus /> Add account</Button></CreateAccountDrawer>}
         </div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          {WIDGETS.map(({ key, label }) => (
-            <button
-              key={key}
-              type="button"
-              suppressHydrationWarning
-              onClick={() => toggleWidget(key)}
-              className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition-all duration-150 ${
-                visibleWidgets[key]
-                  ? "bg-gray-900 text-white border-gray-900 shadow-sm"
-                  : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
-              }`}
-            >
+        {accounts.length > 0 ? (
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {accounts.map((account) => <AccountCard key={account.id} account={account} />)}
+          </div>
+        ) : (
+          <Card className="flex flex-wrap items-center justify-between gap-4 p-5">
+            <div>
+              <h3 className="flex items-center gap-2 font-semibold"><Wallet className="size-4 text-primary" /> Add your first account</h3>
+              <p className="mt-1 text-sm text-muted-foreground">Start with a checking or savings account to track your balance.</p>
+            </div>
+            <CreateAccountDrawer><Button>Add account</Button></CreateAccountDrawer>
+          </Card>
+        )}
+      </section>
+
+      <section id="planning" className="space-y-3 scroll-mt-32 lg:scroll-mt-20">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-semibold tracking-tight">Planning</h2>
+          <Button asChild variant="link" size="sm"><a href="#budget">Monthly budget</a></Button>
+        </div>
+        <GoalsAndBills showGoals={visibleWidgets.goals} showBills={visibleWidgets.bills} />
+      </section>
+
+      <section id="insights" className="space-y-3 scroll-mt-32 lg:scroll-mt-20">
+        <h2 className="text-lg font-semibold tracking-tight">Insights</h2>
+        <SmartAlertsWidget show={visibleWidgets.alerts} transactions={transactions} />
+        <AIAssistantBox show={visibleWidgets.ai} />
+      </section>
+
+      <details className="rounded-lg border bg-card px-4 py-3">
+        <summary className="w-fit cursor-pointer text-sm font-medium">Customize dashboard</summary>
+        <div className="mt-3 flex flex-wrap gap-x-6 gap-y-3">
+          {widgets.map(({ key, label }) => (
+            <label key={key} className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                className="size-4 accent-primary"
+                checked={visibleWidgets[key]}
+                onChange={(event) => {
+                  const checked = event.target.checked;
+                  setVisibleWidgets((previous) => ({ ...previous, [key]: checked }));
+                }}
+              />
               {label}
-            </button>
+            </label>
           ))}
         </div>
-      </div>
-
-      {/* ── 6 & 7. Goals & Bills ── */}
-      <GoalsAndBills
-        showGoals={visibleWidgets.goals}
-        showBills={visibleWidgets.bills}
-      />
-
-      {/* ── Smart Alerts ── */}
-      <SmartAlertsWidget
-        show={visibleWidgets.alerts}
-        transactions={transactions || []}
-      />
-
-      {/* ── 8. AI Assistant ── */}
-      <AIAssistantBox show={visibleWidgets.ai} />
+      </details>
     </div>
   );
 }

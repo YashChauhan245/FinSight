@@ -1,20 +1,16 @@
 "use client";
 
 import {
-  ArrowUpRight,
-  ArrowDownRight,
   CreditCard,
   Landmark,
   Wallet2,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { useEffect } from "react";
 import useFetch from "@/hooks/use-fetch";
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -63,75 +59,33 @@ export function AccountCard({ account }) {
   }, [error]);
 
   return (
-    <Card
-      className={`hover:border-gray-300 transition-all duration-200 border bg-white rounded-xl shadow-sm group relative overflow-hidden font-inter ${
-        isDefault
-          ? "border-blue-300 ring-1 ring-blue-200"
-          : "border-gray-200"
-      }`}
-    >
-      <Link href={`/account/${id}`}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 p-5 pb-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-lg bg-gray-100 border border-gray-200/80 text-gray-700 group-hover:bg-blue-800 group-hover:text-white group-hover:border-blue-800 transition-all duration-200 shadow-sm">
-              <AccountIcon className="h-4 w-4" />
-            </div>
-            <div className="text-left">
-              <CardTitle className="text-sm font-bold tracking-tight text-gray-900 capitalize font-inter">
-                {name}
-              </CardTitle>
-              <span className="text-[11px] font-medium text-gray-500">
-                {type.charAt(0) + type.slice(1).toLowerCase()} Account
-              </span>
-            </div>
-          </div>
-
-          <div
-            className="flex items-center gap-2 z-10"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {isDefault && (
-              <Badge
-                variant="outline"
-                className="text-[10px] bg-blue-50 text-blue-700 border-blue-200 font-semibold px-2 py-0.5 rounded-md"
-              >
-                Default
-              </Badge>
-            )}
-            <Switch
-              checked={isDefault}
-              onClick={handleDefaultChange}
-              disabled={updateDefaultLoading}
-              className="data-[state=checked]:bg-blue-800 scale-90"
-            />
+    <Card className="overflow-hidden">
+      <Link href={"/account/" + id} className="block rounded-t-lg hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring">
+        <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-3">
+          <span className="grid size-9 shrink-0 place-items-center rounded-md bg-secondary text-secondary-foreground">
+            <AccountIcon className="size-4" />
+          </span>
+          <div className="min-w-0">
+            <CardTitle className="break-words">{name}</CardTitle>
+            <p className="text-xs capitalize text-muted-foreground">{type.toLowerCase()} account</p>
           </div>
         </CardHeader>
-
-        <CardContent className="px-5 pb-3 text-left">
-          <div className="text-2xl sm:text-3xl font-extrabold text-gray-900 font-inter tracking-tight tabular-nums mt-1">
-            ₹
-            {parseFloat(balance).toLocaleString("en-IN", {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
-          </div>
-          <p className="text-xs font-medium text-gray-500 mt-1.5 flex items-center gap-1.5">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <span>{account._count?.transactions || 0} Total Transactions</span>
+        <CardContent className="pb-4">
+          <p className="break-words font-serif text-2xl tracking-tight tabular-nums">
+            ₹{Number(balance).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
+          <p className="mt-1 text-xs text-muted-foreground">{account._count?.transactions || 0} transactions</p>
         </CardContent>
-
-        <CardFooter className="flex justify-between items-center text-xs px-5 pb-4 pt-3 border-t border-gray-100 font-inter">
-          <div className="flex items-center text-emerald-600 font-semibold gap-1 text-[11px]">
-            <ArrowUpRight className="h-3.5 w-3.5" />
-            Income Tracked
-          </div>
-          <div className="flex items-center text-rose-600 font-semibold gap-1 text-[11px]">
-            <ArrowDownRight className="h-3.5 w-3.5" />
-            Expenses Tracked
-          </div>
-        </CardFooter>
       </Link>
+      <div className="flex items-center justify-between gap-2 border-t px-5 py-3 sm:px-6">
+        <span className="text-sm text-muted-foreground">Default account</span>
+        <Switch
+          aria-label={"Use " + name + " as the default account"}
+          checked={isDefault}
+          onClick={handleDefaultChange}
+          disabled={updateDefaultLoading}
+        />
+      </div>
     </Card>
   );
 }

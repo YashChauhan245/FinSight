@@ -199,7 +199,7 @@ export function TransactionTable({ transactions }) {
   return (
     <div className="space-y-4">
       {deleteLoading && (
-        <BarLoader className="mt-4" width={"100%"} color="#9333ea" />
+        <BarLoader className="mt-4" width={"100%"} color="hsl(var(--primary))" />
       )}
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
@@ -215,7 +215,7 @@ export function TransactionTable({ transactions }) {
             className="pl-8"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Select
             value={typeFilter}
             onValueChange={(value) => {
@@ -223,7 +223,7 @@ export function TransactionTable({ transactions }) {
               setCurrentPage(1);
             }}
           >
-            <SelectTrigger className="w-[130px]">
+            <SelectTrigger aria-label="Transaction type" className="w-[130px]">
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
@@ -239,7 +239,7 @@ export function TransactionTable({ transactions }) {
               setCurrentPage(1);
             }}
           >
-            <SelectTrigger className="w-[130px]">
+            <SelectTrigger aria-label="Recurring filter" className="w-[130px]">
               <SelectValue placeholder="All Transactions" />
             </SelectTrigger>
             <SelectContent>
@@ -364,7 +364,7 @@ export function TransactionTable({ transactions }) {
                       style={{
                         background: categoryColors[transaction.category],
                       }}
-                      className="px-2 py-1 rounded text-white text-sm"
+                      className="px-2 py-1 rounded text-primary-foreground text-sm"
                     >
                       {transaction.category}
                     </span>
@@ -373,8 +373,8 @@ export function TransactionTable({ transactions }) {
                     className={cn(
                       "text-right font-medium",
                       transaction.type === "EXPENSE"
-                        ? "text-red-500"
-                        : "text-green-500"
+                        ? "text-destructive"
+                        : "text-primary"
                     )}
                   >
                     {transaction.type === "EXPENSE" ? "-" : "+"}Rs {transaction.amount.toFixed(2)}

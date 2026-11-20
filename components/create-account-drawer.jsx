@@ -94,7 +94,7 @@ export function CreateAccountDrawer({ children }) {
                 {...register("name")}
               />
               {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
+                <p className="text-sm text-destructive">{errors.name.message}</p>
               )}
             </div>
 
@@ -118,7 +118,7 @@ export function CreateAccountDrawer({ children }) {
                 </SelectContent>
               </Select>
               {errors.type && (
-                <p className="text-sm text-red-500">{errors.type.message}</p>
+                <p className="text-sm text-destructive">{errors.type.message}</p>
               )}
             </div>
 
@@ -137,7 +137,7 @@ export function CreateAccountDrawer({ children }) {
                 {...register("balance")}
               />
               {errors.balance && (
-                <p className="text-sm text-red-500">{errors.balance.message}</p>
+                <p className="text-sm text-destructive">{errors.balance.message}</p>
               )}
             </div>
 

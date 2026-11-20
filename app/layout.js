@@ -1,8 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/header";
+import NavbarClient from "@/components/navbar-client";
 import Footer from "@/components/footer";
-import { Providers } from "@/components/providers";
 import { Toaster } from "sonner";
 
 const inter = Inter({
@@ -11,25 +10,23 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "FinSight - AI-Powered Financial Management",
-  description: "Track, plan, and grow your finances with AI-powered insights.",
+  title: "FinSight · Personal finance",
+  description: "Track transactions, review spending, and manage your monthly budget.",
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
+    icon: { url: "/icon.png?v=forest", type: "image/png" },
+    apple: "/icon.png?v=forest",
   },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <Providers>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.variable} font-inter antialiased text-gray-900 bg-white min-h-screen flex flex-col`} suppressHydrationWarning>
-          <Header />
-          <main className="flex-1 pt-14" suppressHydrationWarning>{children}</main>
-          <Toaster richColors />
-          <Footer />
-        </body>
-      </html>
-    </Providers>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} min-h-screen flex flex-col`} suppressHydrationWarning>
+        <NavbarClient />
+        <main className="flex-1 pt-16">{children}</main>
+        <Toaster richColors />
+        <Footer />
+      </body>
+    </html>
   );
 }

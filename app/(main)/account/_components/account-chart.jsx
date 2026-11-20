@@ -32,8 +32,8 @@ const DATE_RANGES = {
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm px-4 py-3 text-left min-w-[160px] font-inter">
-        <p className="text-xs font-bold text-gray-500 mb-2">{label}</p>
+      <div className="bg-card border border-border rounded-lg shadow-sm px-4 py-3 text-left min-w-[160px] font-inter">
+        <p className="text-xs font-bold text-muted-foreground mb-2">{label}</p>
         {payload.map((p) => (
           <div key={p.dataKey} className="flex items-center justify-between gap-6 text-xs">
             <div className="flex items-center gap-1.5">
@@ -41,9 +41,9 @@ const CustomTooltip = ({ active, payload, label }) => {
                 className="inline-block w-2.5 h-2.5 rounded-full"
                 style={{ backgroundColor: p.fill }}
               />
-              <span className="text-gray-600 font-medium capitalize">{p.name}</span>
+              <span className="text-muted-foreground font-medium capitalize">{p.name}</span>
             </div>
-            <span className="font-bold text-gray-900 tabular-nums">
+            <span className="font-bold text-foreground tabular-nums">
               ₹{p.value.toLocaleString("en-IN")}
             </span>
           </div>
@@ -99,13 +99,13 @@ export function AccountChart({ transactions }) {
   const net = totals.income - totals.expense;
 
   return (
-    <Card className="border border-gray-200 bg-white shadow-sm rounded-xl font-inter">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 p-5 sm:p-6">
-        <CardTitle className="text-base font-bold text-gray-900 font-inter">
-          Transaction Overview
+    <Card>
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0 pb-4 p-5 sm:p-6">
+        <CardTitle className="text-base font-semibold">
+          Account cash flow
         </CardTitle>
         <Select defaultValue={dateRange} onValueChange={setDateRange}>
-          <SelectTrigger className="w-[140px] text-xs h-8 border-gray-200 bg-white font-medium rounded-lg">
+          <SelectTrigger aria-label="Account chart range" className="w-36">
             <SelectValue placeholder="Select range" />
           </SelectTrigger>
           <SelectContent>
@@ -120,39 +120,39 @@ export function AccountChart({ transactions }) {
 
       <CardContent className="space-y-6 p-5 sm:p-6 pt-0 sm:pt-0">
         {/* Summary Stats */}
-        <div className="grid grid-cols-3 gap-3">
-          <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-left">
+        <div className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-3 sm:gap-3">
+          <div className="bg-secondary border border-border rounded-lg p-3 text-left">
             <div className="flex items-center gap-1.5 mb-1">
-              <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
-              <p className="text-xs text-emerald-700 font-semibold">Income</p>
+              <TrendingUp className="h-3.5 w-3.5 text-primary" />
+              <p className="text-xs text-primary font-semibold">Income</p>
             </div>
-            <p className="text-base font-bold text-emerald-700 tabular-nums">
+            <p className="text-base font-bold text-primary tabular-nums">
               ₹{totals.income.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
             </p>
           </div>
-          <div className="bg-rose-50 border border-rose-100 rounded-xl p-3 text-left">
+          <div className="rounded-lg border bg-muted p-3 text-left">
             <div className="flex items-center gap-1.5 mb-1">
-              <TrendingDown className="h-3.5 w-3.5 text-rose-600" />
-              <p className="text-xs text-rose-700 font-semibold">Expenses</p>
+              <TrendingDown className="size-3.5 text-muted-foreground" />
+              <p className="text-xs font-semibold text-muted-foreground">Spending</p>
             </div>
-            <p className="text-base font-bold text-rose-700 tabular-nums">
+            <p className="break-words font-semibold tabular-nums">
               ₹{totals.expense.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
             </p>
           </div>
           <div
             className={`${
               net >= 0
-                ? "bg-blue-50 border-blue-100"
-                : "bg-gray-50 border-gray-200"
-            } border rounded-xl p-3 text-left`}
+                ? "bg-secondary border-border"
+                : "bg-muted border-border"
+            } border rounded-lg p-3 text-left`}
           >
             <div className="flex items-center gap-1.5 mb-1">
-              <Minus className="h-3.5 w-3.5 text-gray-600" />
-              <p className="text-xs text-gray-700 font-semibold">Net</p>
+              <Minus className="h-3.5 w-3.5 text-muted-foreground" />
+              <p className="text-xs text-foreground font-semibold">Net</p>
             </div>
             <p
               className={`text-base font-bold tabular-nums ${
-                net >= 0 ? "text-blue-800" : "text-gray-700"
+                net >= 0 ? "text-primary" : "text-foreground"
               }`}
             >
               {net < 0 ? "-" : "+"} ₹
@@ -165,8 +165,8 @@ export function AccountChart({ transactions }) {
         {filteredData.length === 0 ? (
           <div className="h-[250px] flex items-center justify-center text-center">
             <div>
-              <p className="text-sm font-semibold text-gray-400">No data for this period</p>
-              <p className="text-xs text-gray-400 mt-1">Try selecting a wider date range</p>
+              <p className="text-sm font-semibold text-muted-foreground">No data for this period</p>
+              <p className="text-xs text-muted-foreground mt-1">Try selecting a wider date range</p>
             </div>
           </div>
         ) : (
@@ -180,33 +180,33 @@ export function AccountChart({ transactions }) {
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
-                  stroke="#e5e7eb"
+                  stroke="hsl(var(--border))"
                 />
                 <XAxis
                   dataKey="date"
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: "#9ca3af" }}
+                  tick={{ fill: "hsl(var(--muted-foreground))" }}
                 />
                 <YAxis
                   fontSize={11}
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: "#9ca3af" }}
+                  tick={{ fill: "hsl(var(--muted-foreground))" }}
                   tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
                 />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f9fafb" }} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "hsl(var(--muted))" }} />
                 <Bar
                   dataKey="income"
                   name="Income"
-                  fill="#10b981"
+                  fill="hsl(var(--chart-1))"
                   radius={[4, 4, 0, 0]}
                 />
                 <Bar
                   dataKey="expense"
                   name="Expense"
-                  fill="#f43f5e"
+                  fill="hsl(var(--chart-2))"
                   radius={[4, 4, 0, 0]}
                 />
               </BarChart>

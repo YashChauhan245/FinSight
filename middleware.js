@@ -2,9 +2,9 @@ import arcjet, { detectBot, shield } from "@arcjet/next";
 import NextAuth from "next-auth";
 import { authConfig } from "./auth.config";
 import { NextResponse } from "next/server";
+import { dashboardPath, getWorkspaceRedirect, isWorkspacePath } from "./lib/auth-redirect";
 
 const { auth } = NextAuth(authConfig);
-const protectedRoutes = ["/dashboard", "/account", "/transaction"];
 
 const aj =
   process.env.NODE_ENV === "production" && process.env.ARCJET_KEY
@@ -38,17 +38,19 @@ export default auth(async (req) => {
     return NextResponse.next();
   }
 
-  const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
-
-  if (isProtected && !isLoggedIn) {
+  if (isWorkspacePath(pathname) && !isLoggedIn) {
     const signInUrl = new URL("/sign-in", req.url);
-    signInUrl.searchParams.set("callbackUrl", pathname);
+    signInUrl.searchParams.set("callbackUrl", pathname + req.nextUrl.search);
     return NextResponse.redirect(signInUrl);
   }
 
-  // Redirect authenticated user from landing page (/) to /dashboard
   if (pathname === "/" && isLoggedIn) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    return NextResponse.redirect(new URL(dashboardPath, req.url));
+  }
+
+  if (isLoggedIn && (pathname === "/sign-in" || pathname === "/sign-up")) {
+    const callbackUrl = req.nextUrl.searchParams.get("callbackUrl");
+    return NextResponse.redirect(new URL(getWorkspaceRedirect(callbackUrl), req.url));
   }
 
   // Run Arcjet security rules in production

@@ -10,24 +10,15 @@ export default function Error({ error, reset }) {
   }, [error]);
 
   return (
-    <div className="min-h-[70vh] flex flex-col items-center justify-center px-4 text-center font-inter">
+    <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 text-center">
       <div className="space-y-4 max-w-md">
-        <h2 className="text-2xl font-extrabold text-gray-900 font-inter">
-          Something went wrong!
-        </h2>
-        <p className="text-xs text-gray-500 font-medium">
-          {error?.message || "An unexpected application error occurred."}
+        <h1 className="font-serif text-4xl tracking-tight">Something went wrong</h1>
+        <p className="text-sm text-muted-foreground">
+          Try loading the page again or return to your dashboard.
         </p>
         <div className="flex items-center justify-center gap-3 pt-2">
-          <Button
-            onClick={() => reset()}
-            className="bg-violet-600 hover:bg-violet-700 text-white font-medium shadow-sm"
-          >
-            Try Again
-          </Button>
-          <Link href="/dashboard">
-            <Button variant="outline">Go to Dashboard</Button>
-          </Link>
+          <Button onClick={reset}>Try again</Button>
+          <Button asChild variant="outline"><Link href="/dashboard">Back to overview</Link></Button>
         </div>
       </div>
     </div>

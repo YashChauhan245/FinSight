@@ -1,210 +1,61 @@
-"use client";
-
-import React, { useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, TrendingUp, ShieldCheck, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
-const HeroSection = () => {
-  const imageRef = useRef(null);
+const exampleWeeks = [
+  { label: "1–7", income: 97, spending: 39 },
+  { label: "8–14", income: 30, spending: 14 },
+  { label: "15–21", income: 21, spending: 16 },
+  { label: "22–31", income: 36, spending: 9 },
+];
 
-  useEffect(() => {
-    const imageElement = imageRef.current;
-    if (!imageElement) return;
-
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const scrollThreshold = 80;
-      if (scrollPosition > scrollThreshold) {
-        imageElement.classList.add("scrolled");
-      } else {
-        imageElement.classList.remove("scrolled");
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+export default function HeroSection() {
   return (
-    <section className="relative pt-20 md:pt-28 pb-16 px-4 md:px-8 max-w-7xl mx-auto overflow-hidden font-inter">
-
-      {/* ── Decorative background blobs ── */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-24 right-0 w-[520px] h-[520px] rounded-full bg-blue-50 opacity-80 blur-3xl" />
-        <div className="absolute top-1/2 -left-20 w-[340px] h-[340px] rounded-full bg-slate-100 opacity-60 blur-3xl" />
-        <div className="absolute bottom-0 right-1/3 w-[260px] h-[260px] rounded-full bg-blue-50/50 opacity-50 blur-2xl" />
+    <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 md:gap-12 md:py-24 lg:gap-16">
+      <div>
+        <h1 className="max-w-xl font-serif text-5xl font-normal leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
+          A clearer view of your money.
+        </h1>
+        <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
+          Track what comes in, see where it goes, and set a budget you can keep. FinSight brings your accounts and everyday spending into one place.
+        </p>
+        <div className="mt-6 flex flex-wrap gap-2">
+          <Button asChild size="lg"><Link href="/sign-in">Explore the dashboard</Link></Button>
+          <Button asChild size="lg" variant="outline"><a href="#features">See features</a></Button>
+        </div>
       </div>
 
-      {/* ── Top Grid ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center mb-12">
-
-        {/* Left Column */}
-        <div className="lg:col-span-7 space-y-6 text-left">
-
-          <h1 className="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl text-gray-900 font-inter">
-            Financial clarity,{" "}
-            <span className="bg-gradient-to-r from-blue-900 via-blue-700 to-blue-500 bg-clip-text text-transparent">
-              engineered for what&apos;s next.
-            </span>
-          </h1>
-
-          <p className="text-sm leading-relaxed text-gray-500 md:text-base max-w-xl">
-            FinSight automates cash flow tracking, budget simulations, and savings milestones.{" "}
-            <span className="text-gray-700 font-medium">No spreadsheets. No cognitive load.</span>
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-wrap items-center gap-3 pt-1">
-            <Link href="/dashboard">
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-blue-800 to-blue-700 hover:from-blue-900 hover:to-blue-800 text-white font-semibold shadow-md shadow-blue-900/20 px-7 py-5 rounded-xl transition-all duration-200 gap-2"
-              >
-                Connect Account
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-
-            <a href="#features">
-              <Button
-                size="lg"
-                variant="outline"
-                className="bg-white/80 border-gray-200 hover:bg-gray-50 text-gray-700 font-medium px-6 py-5 rounded-xl shadow-sm transition-all backdrop-blur-sm"
-              >
-                Explore Features
-              </Button>
-            </a>
+      <div className="rounded-xl bg-secondary p-3 sm:p-6 lg:p-8">
+        <Card className="p-4 sm:p-5">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+            <h2 className="font-semibold tracking-tight">Financial overview</h2>
+            <span className="text-xs text-muted-foreground">Sample data</span>
           </div>
-
-          {/* Trust pills */}
-          <div className="flex flex-wrap items-center gap-2.5 pt-1">
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-sm">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-              Read-only access
-            </span>
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-sm">
-              <TrendingUp className="h-3.5 w-3.5 text-blue-600" />
-              Predictive Analytics
-            </span>
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-full px-3 py-1.5 shadow-sm">
-              <Zap className="h-3.5 w-3.5 text-amber-500" />
-              AI-Powered
-            </span>
-          </div>
-        </div>
-
-        {/* Right Column: Premium Dashboard Card */}
-        <div className="lg:col-span-5" ref={imageRef}>
-          <div className="relative rounded-2xl border border-gray-200/80 bg-white shadow-xl ring-1 ring-gray-900/5 overflow-hidden">
-
-            {/* Gradient accent top strip */}
-            <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-800 via-blue-500 to-blue-300" />
-
-            <div className="p-5 space-y-4">
-              {/* Header row */}
-              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="h-2.5 w-2.5 rounded-full bg-red-400" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-amber-400" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                  <span className="ml-2 text-xs font-bold text-gray-900 font-inter">
-                    FinSight Dashboard
-                  </span>
-                </div>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
-                  ● LIVE
-                </span>
-              </div>
-
-              {/* Metric Row */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="rounded-xl bg-gradient-to-br from-gray-50 to-gray-100/50 p-2.5 text-left border border-gray-100 relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-0.5 h-full bg-blue-400 rounded-l-xl" />
-                  <p className="text-[10px] font-medium text-gray-400 pl-1">Income</p>
-                  <p className="text-xs md:text-sm font-bold text-gray-900 mt-0.5 tabular-nums pl-1">
-                    ₹54,000
-                  </p>
-                </div>
-                <div className="rounded-xl bg-gradient-to-br from-gray-50 to-gray-100/50 p-2.5 text-left border border-gray-100 relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-0.5 h-full bg-rose-400 rounded-l-xl" />
-                  <p className="text-[10px] font-medium text-gray-400 pl-1">Expenses</p>
-                  <p className="text-xs md:text-sm font-bold text-gray-900 mt-0.5 tabular-nums pl-1">
-                    ₹31,200
-                  </p>
-                </div>
-                <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100/30 p-2.5 text-left border border-emerald-100 relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-0.5 h-full bg-emerald-500 rounded-l-xl" />
-                  <p className="text-[10px] font-medium text-emerald-600/80 pl-1">Savings</p>
-                  <p className="text-xs md:text-sm font-bold text-emerald-600 mt-0.5 tabular-nums pl-1">
-                    ₹22,800
-                  </p>
-                </div>
-              </div>
-
-              {/* SVG Sparkline Chart */}
-              <div className="h-28 w-full border border-gray-100 rounded-xl p-2.5 bg-gradient-to-b from-gray-50/80 to-white">
-                <div className="flex justify-between text-[10px] font-semibold text-gray-400 pb-1.5">
-                  <span className="tracking-wide uppercase">30-Day Cashflow</span>
-                  <span className="text-blue-700 font-bold">+12.4% ↑</span>
-                </div>
-                <div className="h-16 w-full">
-                  <svg viewBox="0 0 100 30" className="w-full h-full overflow-visible" preserveAspectRatio="none">
-                    <defs>
-                      <linearGradient id="heroChartGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="rgb(30, 64, 175)" stopOpacity="0.2" />
-                        <stop offset="100%" stopColor="rgb(30, 64, 175)" stopOpacity="0.0" />
-                      </linearGradient>
-                    </defs>
-                    <line x1="0" y1="10" x2="100" y2="10" stroke="#f3f4f6" strokeWidth="0.3" strokeDasharray="2" />
-                    <line x1="0" y1="20" x2="100" y2="20" stroke="#f3f4f6" strokeWidth="0.3" strokeDasharray="2" />
-                    <line x1="0" y1="30" x2="100" y2="30" stroke="#e5e7eb" strokeWidth="0.4" />
-                    <path
-                      d="M 0 30 L 0 22 C 10 18, 20 28, 30 20 C 40 12, 50 15, 60 8 C 70 1, 80 18, 90 12 L 100 10 L 100 30 Z"
-                      fill="url(#heroChartGradient)"
-                    />
-                    <path
-                      d="M 0 22 C 10 18, 20 28, 30 20 C 40 12, 50 15, 60 8 C 70 1, 80 18, 90 12 L 100 10"
-                      fill="none"
-                      stroke="rgb(30, 64, 175)"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    {/* End dot */}
-                    <circle cx="100" cy="10" r="1.8" fill="rgb(30, 64, 175)" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Category Budgets */}
-              <div className="space-y-2.5 pt-0.5">
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-[11px] font-semibold text-gray-600">
-                    <span>Dining Out</span>
-                    <span className="text-gray-400 font-medium">₹1,400 left</span>
-                  </div>
-                  <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                    <div className="bg-gradient-to-r from-amber-400 to-amber-500 h-full rounded-full" style={{ width: "72%" }} />
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-[11px] font-semibold text-gray-600">
-                    <span>Subscriptions</span>
-                    <span className="text-gray-400 font-medium">₹850 left</span>
-                  </div>
-                  <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                    <div className="bg-gradient-to-r from-emerald-400 to-emerald-500 h-full rounded-full" style={{ width: "57%" }} />
-                  </div>
-                </div>
-              </div>
+          <dl className="rounded-lg bg-ledger px-4 py-4 text-ledger-foreground">
+            <dt className="text-sm text-ledger-muted">Total balance</dt>
+            <dd className="my-1 font-serif text-3xl tracking-tight tabular-nums sm:text-4xl">₹2,55,621</dd>
+            <dd className="text-xs text-ledger-muted">Across 3 accounts</dd>
+          </dl>
+          <div className="mt-5 flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="text-sm font-semibold">Cash flow</h3>
+            <div className="flex gap-3 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5"><span className="size-2 rounded-sm bg-chart-1" />Income</span>
+              <span className="flex items-center gap-1.5"><span className="size-2 rounded-sm bg-chart-2" />Spending</span>
             </div>
           </div>
-        </div>
-
+          <div role="img" aria-label="Example cash flow in October. Income exceeds spending in each week." className="mt-4 grid grid-cols-4 gap-1">
+            {exampleWeeks.map((week) => (
+              <div key={week.label} className="text-center" aria-hidden="true">
+                <div className="flex h-24 items-end justify-center gap-1 border-b border-t bg-muted/40">
+                  <span className="w-3 rounded-t-sm bg-chart-1 sm:w-5" style={{ height: `${week.income}%` }} />
+                  <span className="w-3 rounded-t-sm bg-chart-2 sm:w-5" style={{ height: `${week.spending}%` }} />
+                </div>
+                <p className="mt-1.5 text-xs tabular-nums text-muted-foreground">{week.label}</p>
+              </div>
+            ))}
+          </div>
+        </Card>
       </div>
     </section>
   );
-};
-
-export default HeroSection;
+}

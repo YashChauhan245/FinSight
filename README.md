@@ -64,7 +64,7 @@
 
 ### 🚀 Performance Engineering
 - **React Server Components** — Heavy dependencies (Prisma, Gemini SDK, bcryptjs) stay server-side; ~65% smaller client bundle
-- **Non-blocking onboarding** — 180-day synthetic seeding fires asynchronously on first login; sign-in latency <100ms
+- **Non-blocking onboarding** — 180-day synthetic seeding starts in the background when a signed-in user has no accounts
 - **PgBouncer connection pooling** — Prevents serverless connection exhaustion (Supabase port 6543)
 - **Batch DB operations** — 180 seed transactions inserted via single `createMany()` (~80ms vs ~3s sequential)
 
@@ -77,19 +77,19 @@ FinSight/
 ├── app/                             # Next.js App Router
 │   ├── (auth)/                      # Public auth routes (sign-in, sign-up)
 │   ├── (main)/                      # Protected routes (session-gated)
-│   │   ├── layout.js                # Layout with checkUser guard
+│   │   ├── layout.js                # Session guard and workspace navigation
 │   │   ├── dashboard/               # Main financial dashboard
 │   │   │   └── _components/         # Dashboard widgets
 │   │   │       ├── account-card.jsx
 │   │   │       ├── budget-progress.jsx
 │   │   │       ├── smart-alerts.jsx
 │   │   │       ├── transaction-overview.jsx
-│   │   │       └── ai-insight.jsx
+│   │   │       └── ai-assistant.jsx
 │   │   ├── account/[id]/            # Individual account ledger
 │   │   └── transaction/             # Transaction create/edit form
 │   ├── api/inngest/route.js         # Inngest webhook handler (HMAC-verified)
 │   ├── globals.css
-│   ├── layout.js                    # Root layout (Inter font, providers)
+│   ├── layout.js                    # Root layout and Inter font
 │   ├── page.js                      # Public landing page (RSC)
 │   ├── error.jsx                    # React error boundary
 │   └── not-found.jsx                # 404 page
@@ -99,12 +99,12 @@ FinSight/
 │   ├── hero.jsx
 │   ├── ai-simulator.jsx
 │   ├── create-account-drawer.jsx
-│   ├── header.jsx
+│   ├── auth-form.jsx
 │   ├── navbar-client.jsx
-│   ├── footer.jsx
-│   └── providers.jsx
+│   └── footer.jsx
 │
 ├── actions/                         # Next.js Server Actions
+│   ├── auth.js                      # Sign-in, sign-up, and sign-out flow
 │   ├── account.js                   # Account CRUD + bulk delete
 │   ├── transaction.js               # Transaction CRUD + OCR (scanReceipt)
 │   ├── budget.js                    # Budget upsert
@@ -120,6 +120,7 @@ FinSight/
 │   │   ├── client.js                # Inngest client instance
 │   │   └── function.js              # 3 background cron job definitions
 │   ├── arcjet.js                    # Arcjet security configuration
+│   ├── auth-redirect.js             # Workspace return paths
 │   ├── checkUser.js                 # Idempotent user sync + async seeding
 │   ├── prisma.js                    # Prisma singleton (HMR-safe)
 │   ├── schema.js                    # Zod schemas
@@ -139,8 +140,7 @@ FinSight/
 │   └── migrations/                  # Version-controlled SQL migrations
 │
 ├── public/
-│   ├── logoo.png
-│   └── icon.png
+│   └── icon.png                     # FinSight logo and browser tab icon
 │
 ├── auth.js                          # NextAuth main config (Node.js only)
 ├── auth.config.js                   # Edge-safe NextAuth config (middleware)
@@ -265,7 +265,7 @@ await db.$transaction(async (tx) => {
 All monetary fields use `Decimal` in Prisma → `NUMERIC(65, 30)` in PostgreSQL. This eliminates IEEE 754 binary floating-point rounding errors (e.g., `0.1 + 0.2 = 0.30000000000000004`) that accumulate and corrupt balances over thousands of transactions.
 
 ### Non-Blocking Onboarding
-On first OAuth login, 180-day synthetic seeding fires **without `await`** in `lib/checkUser.js`, keeping sign-in response under 100ms:
+After sign-in, the first workspace reads share the user lookup for that render. If the user has no accounts, `lib/checkUser.js` starts 180-day synthetic seeding without waiting for it:
 
 ```javascript
 if (loggedInUser._count.accounts === 0) {

@@ -2,6 +2,7 @@ import { getUserAccounts } from "@/actions/dashboard";
 import { defaultCategories } from "@/data/categories";
 import { AddTransactionForm } from "../_components/transaction-form";
 import { getTransaction } from "@/actions/transaction";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -17,15 +18,16 @@ export default async function AddTransactionPage({ searchParams }) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-5 pb-16 font-inter text-left">
-      <div className="mb-8">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 font-inter">
-          {editId ? "Edit Transaction" : "Add Transaction"}
+    <div className="mx-auto max-w-4xl space-y-5">
+      <div>
+        <Link href="/dashboard#transactions" className="text-sm font-medium text-primary hover:underline">Back to transactions</Link>
+        <h1 className="mt-3 font-serif text-4xl font-normal tracking-tight sm:text-5xl">
+          {editId ? "Edit transaction" : "Add transaction"}
         </h1>
-        <p className="text-xs text-gray-500 mt-1 font-medium">
+        <p className="mt-2 text-sm text-muted-foreground">
           {editId
-            ? "Update the details of your transaction below."
-            : "Record a new income or expense to keep your finances up to date."}
+            ? "Update the details of a recorded transaction."
+            : "Record an expense or income in your workspace."}
         </p>
       </div>
       <AddTransactionForm

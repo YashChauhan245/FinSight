@@ -1,292 +1,227 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import { startTransition, useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession, signIn, signOut } from "next-auth/react";
+import {
+  BarChart3, CalendarDays, LayoutDashboard, List, LogOut, Menu, Moon,
+  PenSquare, Sun, Wallet, X,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { endSession } from "@/actions/auth";
 import { Button } from "./ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import {
-  PenBox,
-  LayoutDashboard,
-  Sparkles,
-  Menu,
-  X,
-  ChevronRight,
-  LogOut,
-  User,
-} from "lucide-react";
 
-export default function NavbarClient() {
-  const pathname = usePathname();
-  const { data: session, status } = useSession();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
+const publicLinks = [
+  { label: "Features", href: "/#features" },
+  { label: "Assistant demo", href: "/#ai-demo" },
+  { label: "Pricing", href: "/#pricing" },
+];
+
+const workspaceLinks = [
+  { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Transactions", href: "/dashboard#transactions", icon: List },
+  { label: "Accounts", href: "/dashboard#accounts", icon: Wallet },
+  { label: "Planning", href: "/dashboard#planning", icon: CalendarDays },
+  { label: "Insights", href: "/dashboard#insights", icon: BarChart3 },
+];
+
+export function Brand({ href = "/", onClick }) {
+  return (
+    <Link href={href} onClick={onClick} className="inline-flex w-fit shrink-0 items-center gap-2 text-lg font-bold tracking-tight">
+      <span className="grid size-9 place-items-center rounded-md bg-secondary dark:bg-primary">
+        <Image src="/icon.png?v=forest" alt="" width={28} height={28} className="size-7 object-contain" unoptimized />
+      </span>
+      FinSight
+    </Link>
+  );
+}
+
+function ThemeButton() {
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const prefersDark = localStorage.getItem("finsight-theme") === "dark";
+    document.documentElement.classList.toggle("dark", prefersDark);
+    setDark(prefersDark);
   }, []);
 
-  const isSignedIn = mounted && status === "authenticated";
-  const user = session?.user;
+  function toggleTheme() {
+    const nextTheme = !dark;
+    document.documentElement.classList.toggle("dark", nextTheme);
+    localStorage.setItem("finsight-theme", nextTheme ? "dark" : "light");
+    setDark(nextTheme);
+  }
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const label = dark ? "Switch to light theme" : "Switch to dark theme";
+  return (
+    <Button type="button" size="icon" variant="outline" onClick={toggleTheme} aria-label={label} title={label}>
+      {dark ? <Sun /> : <Moon />}
+    </Button>
+  );
+}
 
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
-
-  const navLinksSignedOut = [
-    { label: "Features", href: "/#features" },
-    { label: "How It Works", href: "/#how-it-works" },
-    { label: "AI Demo", href: "/#ai-demo" },
-  ];
-
-  const getInitials = (name) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
+function ProfileMenu({ user, showName = false }) {
+  const name = user?.name || "My workspace";
+  const initials = name.trim().split(/\s+/).slice(0, 2).map((word) => word[0]).join("").toUpperCase();
 
   return (
-    <header
-      className={`fixed top-0 w-full z-50 transition-all duration-200 bg-white border-b border-gray-200/80 ${
-        scrolled ? "shadow-sm py-2.5" : "py-3"
-      }`}
-      suppressHydrationWarning
-    >
-      <nav className="container mx-auto px-4 md:px-6 flex items-center justify-between" suppressHydrationWarning>
-        {/* Brand Logo */}
-        <div className="flex items-center gap-6">
-          <Link href={isSignedIn ? "/dashboard" : "/"} className="flex items-center group">
-            <Image
-              src="/logoo.png"
-              alt="FinSight Logo"
-              width={185}
-              height={52}
-              priority
-              className="h-13 md:h-14 w-auto object-contain transition-transform duration-200 group-hover:opacity-90"
-            />
-          </Link>
-        </div>
-
-        {/* Desktop Navigation Links for SignedOut */}
-        {!isSignedIn && (
-          <div className="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-600">
-            {navLinksSignedOut.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-gray-600 hover:text-gray-900 transition-colors py-1 font-medium"
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          aria-label="User menu"
+          className={showName ? "h-auto w-full justify-start gap-3 px-2 py-2 text-left" : "size-10 p-0"}
+        >
+          <span className="grid size-8 shrink-0 place-items-center overflow-hidden rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
+            {user?.image ? (
+              <Image src={user.image} alt="" width={32} height={32} className="size-8 object-cover" />
+            ) : initials}
+          </span>
+          {showName && <span className="truncate">{name}</span>}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align={showName ? "start" : "end"} className="w-56">
+        <DropdownMenuLabel>
+          <span className="block truncate">{name}</span>
+          {user?.email && <span className="block truncate text-xs font-normal text-muted-foreground">{user.email}</span>}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard"><LayoutDashboard className="size-4" /> Dashboard</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/transaction/create"><PenSquare className="size-4" /> Add transaction</Link>
+        </DropdownMenuItem>
+        {user && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => startTransition(endSession)} className="text-destructive">
+              <LogOut className="size-4" /> Sign out
+            </DropdownMenuItem>
+          </>
         )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
-        {/* Action Buttons & Profile */}
-        <div className="flex items-center gap-3" suppressHydrationWarning>
-          {isSignedIn ? (
-            <>
-              <Link href="/dashboard" className="hidden sm:inline-block">
-                <Button
-                  variant="outline"
-                  className="border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-gray-900 font-medium text-sm flex items-center gap-2 rounded-xl h-9 px-3.5 shadow-sm transition-all"
-                >
-                  <LayoutDashboard size={15} className="text-blue-700" />
-                  <span>Dashboard</span>
-                </Button>
-              </Link>
+function WorkspaceLinks({ current, onNavigate, className, onDashboard }) {
+  const NavigationLink = onDashboard ? "a" : Link;
 
-              <Link href="/transaction/create">
-                <Button className="bg-blue-800 hover:bg-blue-900 text-white font-medium text-sm flex items-center gap-2 shadow-sm transition-all rounded-xl h-9 px-4">
-                  <PenBox size={15} />
-                  <span className="hidden sm:inline">Add Transaction</span>
-                </Button>
-              </Link>
-
-              {/* User Dropdown */}
-              <div className="pl-1">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      className="w-9 h-9 rounded-full border border-gray-200 shadow-sm hover:border-blue-400 focus:outline-none transition-all flex items-center justify-center overflow-hidden bg-blue-100 text-blue-800 font-semibold text-xs"
-                      aria-label="User menu"
-                    >
-                      {user?.image ? (
-                        <Image
-                          src={user.image}
-                          alt={user.name || "User Avatar"}
-                          width={36}
-                          height={36}
-                          className="w-full h-full object-cover rounded-full"
-                        />
-                      ) : (
-                        <span>{getInitials(user?.name)}</span>
-                      )}
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 p-2 rounded-xl shadow-lg border-gray-200">
-                    <DropdownMenuLabel className="font-normal p-2">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-semibold text-gray-900 leading-none">
-                          {user?.name || "User"}
-                        </p>
-                        <p className="text-xs leading-none text-gray-500 truncate">
-                          {user?.email || ""}
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-gray-100 my-1" />
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href="/dashboard"
-                        className="flex items-center gap-2 cursor-pointer rounded-lg px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      >
-                        <LayoutDashboard size={15} className="text-blue-700" />
-                        <span>Dashboard</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href="/transaction/create"
-                        className="flex items-center gap-2 cursor-pointer rounded-lg px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      >
-                        <PenBox size={15} className="text-blue-700" />
-                        <span>Add Transaction</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-gray-100 my-1" />
-                    <DropdownMenuItem
-                      onClick={() => signOut({ callbackUrl: "/" })}
-                      className="flex items-center gap-2 cursor-pointer rounded-lg px-2.5 py-2 text-sm text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-600"
-                    >
-                      <LogOut size={15} />
-                      <span>Sign Out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </>
-          ) : (
-            <>
-              <Link href="/sign-in">
-                <Button
-                  variant="outline"
-                  className="border-gray-200 text-gray-700 hover:bg-gray-50 font-medium rounded-xl h-9 px-3.5 shadow-sm transition-all"
-                >
-                  Login
-                </Button>
-              </Link>
-
-              <Link href="/sign-in">
-                <Button className="bg-blue-800 hover:bg-blue-900 text-white shadow-sm font-medium text-sm rounded-xl h-9 px-4 transition-all">
-                  <span>Get Started</span>
-                </Button>
-              </Link>
-            </>
+  return (
+    <nav aria-label="Workspace" className={className}>
+      {workspaceLinks.map(({ label, href, icon: Icon }) => (
+        <NavigationLink
+          key={href}
+          href={onDashboard ? href.slice("/dashboard".length) || "#" : href}
+          onClick={() => onNavigate(href)}
+          aria-current={current === href ? (href.includes("#") ? "location" : "page") : undefined}
+          className={cn(
+            "flex flex-col items-center justify-center gap-1 rounded-md px-1 py-2 text-xs font-medium text-muted-foreground hover:bg-muted lg:flex-row lg:justify-start lg:gap-3 lg:px-3 lg:py-2.5 lg:text-sm",
+            current === href && "bg-secondary text-secondary-foreground"
           )}
+        >
+          <Icon aria-hidden="true" className="size-4 shrink-0" />
+          {label}
+        </NavigationLink>
+      ))}
+    </nav>
+  );
+}
 
-          {/* Mobile Hamburger Toggle Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden flex items-center justify-center p-2 rounded-xl text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors border border-gray-200 ml-1"
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <X size={19} /> : <Menu size={19} />}
-          </button>
-        </div>
-      </nav>
+export default function NavbarClient({ workspace = false, user }) {
+  const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dashboardSection, setDashboardSection] = useState("/dashboard");
 
-      {/* Mobile Drawer Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-b border-gray-200 bg-white px-4 pt-3 pb-5 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-200">
-          {!isSignedIn ? (
-            <div className="flex flex-col space-y-1.5 pt-1">
-              {navLinksSignedOut.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                >
-                  <span>{link.label}</span>
-                  <ChevronRight size={16} className="text-gray-400" />
-                </a>
-              ))}
+  const isDashboard = pathname === "/dashboard";
+  const isAccount = pathname.startsWith("/account/");
+  const isTransaction = pathname.startsWith("/transaction/");
+  const inWorkspace = isDashboard || isAccount || isTransaction;
+
+  useEffect(() => {
+    if (!workspace) {
+      setMobileMenuOpen(false);
+      return;
+    }
+    function syncSection() {
+      setDashboardSection("/dashboard" + window.location.hash);
+    }
+    syncSection();
+    window.addEventListener("hashchange", syncSection);
+    return () => window.removeEventListener("hashchange", syncSection);
+  }, [pathname, workspace]);
+
+  if (workspace) {
+    const current = isAccount ? "/dashboard#accounts" : isTransaction ? "/dashboard#transactions" : dashboardSection;
+    const goToOverview = () => setDashboardSection("/dashboard");
+    return (
+      <>
+        <aside className="fixed inset-y-0 left-0 z-30 hidden w-52 flex-col border-r bg-card p-4 lg:flex">
+          <div className="px-2 pb-7 pt-2"><Brand href="/dashboard" onClick={goToOverview} /></div>
+          <WorkspaceLinks current={current} onNavigate={setDashboardSection} onDashboard={isDashboard} className="grid gap-1" />
+          <div className="mt-auto border-t pt-3"><ProfileMenu user={user} showName /></div>
+        </aside>
+        <header className="fixed inset-x-0 top-0 z-30 border-b bg-card lg:left-52">
+          <div className="flex h-16 items-center justify-between gap-2 px-4 sm:px-7">
+            <div className="lg:hidden"><Brand href="/dashboard" onClick={goToOverview} /></div>
+            <span className="hidden text-sm font-medium text-muted-foreground lg:block">Personal workspace</span>
+            <div className="flex items-center gap-2">
+              {!isDashboard && (
+                <Button asChild className="hidden sm:inline-flex">
+                  <Link href="/transaction/create"><PenSquare /> Add transaction</Link>
+                </Button>
+              )}
+              <ThemeButton />
+              <div className="lg:hidden"><ProfileMenu user={user} /></div>
             </div>
-          ) : (
-            <div className="flex flex-col space-y-1.5 pt-1">
-              <Link
-                href="/dashboard"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
-                  pathname === "/dashboard"
-                    ? "bg-blue-50 text-blue-700 font-semibold"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                <LayoutDashboard size={17} className="text-blue-700" />
-                <span>Dashboard</span>
-              </Link>
-
-              <Link
-                href="/transaction/create"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
-                  pathname === "/transaction/create"
-                    ? "bg-blue-50 text-blue-700 font-semibold"
-                    : "text-gray-700 hover:bg-gray-50"
-                }`}
-              >
-                <PenBox size={17} className="text-blue-700" />
-                <span>Add Transaction</span>
-              </Link>
-
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  signOut({ callbackUrl: "/" });
-                }}
-                className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-colors w-full text-left"
-              >
-                <LogOut size={17} />
-                <span>Sign Out</span>
-              </button>
-            </div>
-          )}
-
-          <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 px-3">
-            <span className="flex items-center gap-1.5 font-medium">
-              <Sparkles size={14} className="text-blue-600" />
-              FinSight AI Personal Finance
-            </span>
           </div>
+          <WorkspaceLinks current={current} onNavigate={setDashboardSection} onDashboard={isDashboard} className="grid h-[52px] grid-cols-5 gap-1 border-t px-2 py-1 lg:hidden" />
+        </header>
+      </>
+    );
+  }
+
+  if (inWorkspace) return null;
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-30 border-b bg-card">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4 sm:px-6">
+        <Brand />
+        <nav aria-label="Main navigation" className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex">
+          {publicLinks.map(({ href, label }) => <Link key={href} href={href} className="hover:text-foreground">{label}</Link>)}
+        </nav>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <ThemeButton />
+          <Button asChild variant="ghost" className="px-2 md:px-4"><Link href="/sign-in">Sign in</Link></Button>
+          <Button asChild className="hidden sm:inline-flex"><Link href="/sign-up">Get started</Link></Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
+          >
+            {mobileMenuOpen ? <X /> : <Menu />}
+          </Button>
         </div>
+      </div>
+      {mobileMenuOpen && (
+        <nav id="mobile-navigation" aria-label="Mobile navigation" className="grid gap-1 border-t bg-card p-3 text-sm md:hidden">
+          {publicLinks.map(({ href, label }) => (
+            <Link key={href} href={href} onClick={() => setMobileMenuOpen(false)} className="rounded-md px-3 py-2 hover:bg-muted">{label}</Link>
+          ))}
+          <Link href="/sign-up" onClick={() => setMobileMenuOpen(false)} className="rounded-md px-3 py-2 font-medium text-primary hover:bg-muted sm:hidden">Get started</Link>
+        </nav>
       )}
     </header>
   );

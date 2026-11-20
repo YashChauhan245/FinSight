@@ -39,9 +39,15 @@ module.exports = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))'
         },
+        warning: 'hsl(var(--warning) / <alpha-value>)',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        ledger: {
+          DEFAULT: 'hsl(var(--ledger) / <alpha-value>)',
+          foreground: 'hsl(var(--ledger-foreground) / <alpha-value>)',
+          muted: 'hsl(var(--ledger-muted) / <alpha-value>)',
+        },
         chart: {
           '1': 'hsl(var(--chart-1))',
           '2': 'hsl(var(--chart-2))',
@@ -56,8 +62,9 @@ module.exports = {
         sm: 'calc(var(--radius) - 4px)'
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "sans-serif"],
-        inter: ["var(--font-inter)", "sans-serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        inter: ["var(--font-inter)", "system-ui", "sans-serif"],
+        serif: ["Georgia", "serif"],
       }
     }
   },

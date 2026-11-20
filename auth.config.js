@@ -47,3 +47,5 @@ export const authConfig = {
   },
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
 };
+
+export const signInProviders = providers.map(({ id, name }) => ({ id, name }));
